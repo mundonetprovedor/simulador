@@ -1812,24 +1812,28 @@
                 const panel = document.querySelector('.lens-panel');
                 const panelRect = panel.getBoundingClientRect();
                 
-                // Get original offset top of the card relative to the lens-panel parent
-                const cardOriginalTop = card.offsetTop || 0;
+                // Clear any previous transform to use margin-top flow positioning
+                card.style.transform = 'none';
+                
+                // Get the current margin top to calculate the original offsetTop invariant
+                const currentMargin = parseFloat(card.style.marginTop) || 0;
+                const cardOriginalTop = card.offsetTop - currentMargin;
                 const cardHeight = card.offsetHeight || 420;
                 
-                // Calculate target Y vertical translation to center the card next to the clicked item
-                let targetY = (clickedElRect.top + clickedElRect.height / 2) - panelRect.top - (cardHeight / 2) - cardOriginalTop;
+                // Calculate target margin-top to center the card next to the clicked item
+                let targetMargin = (clickedElRect.top + clickedElRect.height / 2) - panelRect.top - (cardHeight / 2) - cardOriginalTop;
                 
                 // Adjust for any scroll inside the lens-panel
-                targetY += panel.scrollTop;
+                targetMargin += panel.scrollTop;
                 
-                // Keep the card fully visible within the sidebar scroll bounds
-                const maxTranslate = Math.max(0, panel.scrollHeight - cardHeight - cardOriginalTop - 30);
-                const minTranslate = -cardOriginalTop + 10;
-                targetY = Math.max(minTranslate, Math.min(targetY, maxTranslate));
+                // Keep the card within safe margins (do not overlap title)
+                const maxMargin = Math.max(0, panel.scrollHeight - cardHeight - cardOriginalTop - 30);
+                const minMargin = 0;
+                targetMargin = Math.max(minMargin, Math.min(targetMargin, maxMargin));
                 
-                // Set smooth transitions and translate the card vertically
-                card.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s';
-                card.style.transform = `translateY(${targetY}px)`;
+                // Set smooth transitions and apply margin-top vertical shift
+                card.style.transition = 'margin-top 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s';
+                card.style.marginTop = `${targetMargin}px`;
             }
         }
 
