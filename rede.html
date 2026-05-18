@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MundoNet - Mapa de Rede Interativo & Diagnóstico</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #060913;
+            --bg-panel: rgba(10, 16, 32, 0.75);
+            --bg-card: rgba(18, 28, 54, 0.6);
+            --primary: #3b82f6;
+            --accent: #06b6d4;
+            --purple: #a855f7;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            
+            --blue-glow: rgba(59, 130, 246, 0.45);
+            --purple-glow: rgba(168, 85, 247, 0.45);
+            --cyan-glow: rgba(6, 182, 212, 0.45);
+            --green-glow: rgba(16, 185, 129, 0.45);
+            --yellow-glow: rgba(245, 158, 11, 0.45);
+            --pink-glow: rgba(236, 72, 153, 0.45);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.04) 0px, transparent 50%);
+        }
+
+        /* Glowing Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .orb-1 { width: 450px; height: 450px; background: var(--primary); top: -100px; left: -100px; }
+        .orb-2 { width: 550px; height: 550px; background: var(--purple); bottom: -200px; right: -200px; }
+
+        header {
+            height: 80px;
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 15, 30, 0.4);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-title i {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(59,130,246,0.5));
+        }
+
+        .header-title h1 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: blink-dot 1.5s infinite;
+        }
+
+        @keyframes blink-dot {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        .btn-control {
+            padding: 8px 16px;
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-control:hover {
+            background: var(--danger);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-control.active {
+            background: var(--success);
+            color: #ffffff;
+            border-color: var(--success);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Topology Main Board */
+        .topology-board {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            z-index: 5;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .topology-board.zoomed {
+            transform: scale(0.9) translateY(-30px);
+            opacity: 0.65;
+            pointer-events: none;
+        }
+
+        .topology-svg-full {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .nodes-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1280px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .node-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 140px;
+        }
+
+        .node-card:hover {
+            transform: translateY(-12px) scale(1.1);
+        }
+
+        .node-icon-circle {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: rgba(13, 20, 38, 0.85);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            color: #ffffff;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .node-card:hover .node-icon-circle {
+            border-color: #ffffff;
+            box-shadow: 0 15px 30px rgba(255,255,255,0.1);
+        }
+
+        .node-card span {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            white-space: nowrap;
+        }
+
+        .node-card p {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: -8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        /* Pulsing Node Rings */
+        .pulse-blue { color: #3b82f6 !important; border-color: rgba(59, 130, 246, 0.4) !important; box-shadow: 0 0 25px rgba(59, 130, 246, 0.25); animation: p-blue 2.5s infinite; }
+        .pulse-purple { color: #a855f7 !important; border-color: rgba(168, 85, 247, 0.4) !important; box-shadow: 0 0 25px rgba(168, 85, 247, 0.25); animation: p-purple 2.5s infinite; }
+        .pulse-pink { color: #ec4899 !important; border-color: rgba(236, 72, 153, 0.4) !important; box-shadow: 0 0 25px rgba(236, 72, 153, 0.25); animation: p-pink 2.5s infinite; }
+        .pulse-cyan { color: #06b6d4 !important; border-color: rgba(6, 182, 212, 0.4) !important; box-shadow: 0 0 25px rgba(6, 182, 212, 0.25); animation: p-cyan 2.5s infinite; }
+        .pulse-green { color: #10b981 !important; border-color: rgba(16, 185, 129, 0.4) !important; box-shadow: 0 0 25px rgba(16, 185, 129, 0.25); animation: p-green 2.5s infinite; }
+        .pulse-yellow { color: #f59e0b !important; border-color: rgba(245, 158, 11, 0.4) !important; box-shadow: 0 0 25px rgba(245, 158, 11, 0.25); animation: p-yellow 2.5s infinite; }
+
+        @keyframes p-blue { 0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.25); } 50% { box-shadow: 0 0 35px rgba(59, 130, 246, 0.65); } }
+        @keyframes p-purple { 0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.25); } 50% { box-shadow: 0 0 35px rgba(168, 85, 247, 0.65); } }
+        @keyframes p-pink { 0%, 100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.25); } 50% { box-shadow: 0 0 35px rgba(236, 72, 153, 0.65); } }
+        @keyframes p-cyan { 0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.25); } 50% { box-shadow: 0 0 35px rgba(6, 182, 212, 0.65); } }
+        @keyframes p-green { 0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.25); } 50% { box-shadow: 0 0 35px rgba(16, 185, 129, 0.65); } }
+        @keyframes p-yellow { 0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.25); } 50% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.65); } }
+
+        /* Full Panel Detail View */
+        .zoom-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(4, 6, 12, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .zoom-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .zoom-content-card {
+            background: linear-gradient(135deg, #0f182e 0%, #060a14 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            width: 90%;
+            max-width: 950px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 35px 80px rgba(0,0,0,0.8), 0 0 40px rgba(59, 130, 246, 0.08);
+            transform: scale(0.85);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .zoom-overlay.active .zoom-content-card {
+            transform: scale(1);
+        }
+
+        .zoom-close {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: all 0.25s;
+            z-index: 10;
+        }
+
+        .zoom-close:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.25);
+            transform: rotate(90deg);
+        }
+
+        .zoom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .zoom-grid {
+                grid-template-columns: 1fr;
+            }
+            .zoom-visual {
+                height: 220px !important;
+            }
+        }
+
+        .zoom-visual {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            height: 100%;
+            min-height: 350px;
+        }
+
+        .zoom-visual img {
+            max-width: 90%;
+            max-height: 320px;
+            object-fit: contain;
+            border-radius: 16px;
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.6));
+        }
+
+        .zoom-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .zoom-badge {
+            align-self: flex-start;
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            margin-bottom: 12px;
+        }
+
+        .zoom-info h2 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .zoom-info p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        .specs-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+        }
+
+        .spec-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .spec-row strong {
+            color: var(--accent);
+        }
+
+        .spec-row span {
+            color: var(--text-main);
+            font-family: monospace;
+            font-weight: 600;
+        }
+
+        .alert-panel {
+            background: rgba(16, 185, 129, 0.04);
+            border: 1px solid rgba(16, 185, 129, 0.12);
+            border-left: 4px solid var(--success);
+            padding: 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .alert-panel.danger {
+            background: rgba(239, 68, 68, 0.04);
+            border-color: rgba(239, 68, 68, 0.12);
+            border-left-color: var(--danger);
+        }
+
+        .alert-panel i {
+            font-size: 1.3rem;
+            color: var(--warning);
+            margin-top: 2px;
+        }
+
+        .alert-panel h5 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #ffffff;
+        }
+
+        .alert-panel p {
+            margin: 0;
+            font-size: 0.85rem;
+            line-height: 1.45;
+            color: var(--text-muted);
+        }
+
+        /* SVG Line laser animations */
+        @keyframes flow-dots {
+            from { stroke-dashoffset: 400; }
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient glows -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <header>
+        <div class="header-title">
+            <i class="fa-solid fa-circle-nodes"></i>
+            <div>
+                <h1>Rede Interativa MundoNet v2.0</h1>
+                <p style="font-size:0.75rem; color:var(--text-muted); font-weight:500;">Simulador Físico & Lógico de Suporte N1</p>
+            </div>
+        </div>
+        
+        <div class="header-controls">
+            <div class="status-pill" id="status-pill">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">Rede Operando Online</span>
+            </div>
+            
+            <button class="btn-control" id="sim-cut-btn" onclick="toggleFiberCut()">
+                <i class="fa-solid fa-scissors"></i> Simular Rompimento de Fibra
+            </button>
+        </div>
+    </header>
+
+    <!-- Topology Interactive Board -->
+    <div class="topology-board" id="topology-board">
+        
+        <svg class="topology-svg-full" viewBox="0 0 1200 200" preserveAspectRatio="none">
+            <!-- Normal Connection cable background -->
+            <line x1="100" y1="100" x2="1100" y2="100" stroke="rgba(255, 255, 255, 0.05)" stroke-width="8" stroke-linecap="round" id="bg-cable-line"></line>
+            
+            <!-- Dynamic flow laser line -->
+            <line x1="100" y1="100" x2="1100" y2="100" stroke="url(#cableGradient)" stroke-width="4" stroke-linecap="round" stroke-dasharray="15 30" style="animation: flow-dots 12s infinite linear;" id="laser-flow-line"></line>
+            
+            <!-- Broken red cable visual -->
+            <line x1="500" y1="100" x2="700" y2="100" stroke="var(--danger)" stroke-width="4" stroke-dasharray="8 8" style="display:none;" id="broken-cable-visual"></line>
+
+            <defs>
+                <linearGradient id="cableGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="var(--accent)"></stop>
+                    <stop offset="50%" stop-color="var(--purple)"></stop>
+                    <stop offset="100%" stop-color="var(--success)"></stop>
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <div class="nodes-grid">
+            <!-- Node 1: Internet BGP -->
+            <div class="node-card" onclick="zoomInNode('internet')">
+                <div class="node-icon-circle pulse-blue"><i class="fa-solid fa-globe"></i></div>
+                <span>Internet Core BGP</span>
+                <p>Link de Borda</p>
+            </div>
+            
+            <!-- Node 2: OLT Central -->
+            <div class="node-card" onclick="zoomInNode('olt')">
+                <div class="node-icon-circle pulse-purple" id="olt-node"><i class="fa-solid fa-building-columns"></i></div>
+                <span>OLT Central</span>
+                <p>Central Provedor</p>
+            </div>
+            
+            <!-- Node 3: CTO Poste -->
+            <div class="node-card" onclick="zoomInNode('cto')">
+                <div class="node-icon-circle pulse-pink" id="cto-node"><i class="fa-solid fa-box-archive"></i></div>
+                <span>Caixa CTO</span>
+                <p>Poste da Rua</p>
+            </div>
+            
+            <!-- Node 4: ONU Cliente -->
+            <div class="node-card" onclick="zoomInNode('onu')">
+                <div class="node-icon-circle pulse-cyan" id="onu-node"><i class="fa-solid fa-network-wired"></i></div>
+                <span>ONU / ONT</span>
+                <p>Residência Cliente</p>
+            </div>
+            
+            <!-- Node 5: Roteador Wi-Fi -->
+            <div class="node-card" onclick="zoomInNode('router')">
+                <div class="node-icon-circle pulse-green" id="router-node"><i class="fa-solid fa-wifi"></i></div>
+                <span>Roteador Wi-Fi</span>
+                <p>Rede Sem Fio</p>
+            </div>
+            
+            <!-- Node 6: Dispositivos Finais -->
+            <div class="node-card" onclick="zoomInNode('devices')">
+                <div class="node-icon-circle pulse-yellow"><i class="fa-solid fa-laptop-code"></i></div>
+                <span>Aparelhos Finais</span>
+                <p>Ponta de Consumo</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Zoom Details Panel Overlay -->
+    <div class="zoom-overlay" id="zoom-overlay" onclick="closeZoomPanel()">
+        <div class="zoom-content-card" onclick="event.stopPropagation()">
+            <button class="zoom-close" onclick="closeZoomPanel()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="zoom-grid">
+                <div class="zoom-visual">
+                    <img id="zoom-img" src="" alt="Visão Ampliada">
+                </div>
+                <div class="zoom-info">
+                    <span class="zoom-badge" id="zoom-badge">Badge</span>
+                    <h2 id="zoom-title">Equipamento Nome</h2>
+                    <p id="zoom-desc">Explicação...</p>
+                    
+                    <div class="specs-panel" id="zoom-specs">
+                        <!-- Spec rows -->
+                    </div>
+                    
+                    <div class="alert-panel" id="zoom-tip-box">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <div>
+                            <h5 id="zoom-tip-title">Orientação Técnico</h5>
+                            <p id="zoom-tip-desc">Orientação técnico...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Zoomable interactive node data database
+        const networkDatabase = {
+            'internet': {
+                title: "1. Internet & Trânsito BGP",
+                badge: "Tráfego Global",
+                desc: "A grande porta de entrada da internet mundial na MundoNet. Nossos roteadores de borda gerenciam conexões com operadoras globais rodando protocolo BGP para estabilidade das rotas de tráfego, além de conexão redundante e de baixa latência direto com o IX.br em São Paulo.",
+                img: "images/zabbix.png",
+                specs: [
+                    { key: "Uptime da Borda", val: "99.999%" },
+                    { key: "Links redundantes", val: "Ativo + Backup" },
+                    { key: "Troca de tráfego (IX)", val: "Conexão direta SP" }
+                ],
+                tipTitle: "Instrução de Ocorrência",
+                tipDesc: "Lentidão massiva para múltiplos sites ao mesmo tempo? Monitore o trânsito BGP no NOC para ver se um de nossos links principais caiu ou se congestionou.",
+                tipClass: "success"
+            },
+            'olt': {
+                title: "2. OLT (Optical Line Terminal)",
+                badge: "Central do Provedor",
+                desc: "O emissor laser central. É o equipamento de chassi gigante na central da MundoNet que recebe a internet BGP e a injeta como pulsos de luz laser invisível de altíssima frequência em cabos de fibra óptica que atendem milhares de lares.",
+                img: "images/unm2000.png",
+                specs: [
+                    { key: "Protocolo de Rede", val: "GPON / EPON / XGS-PON" },
+                    { key: "Sincronização logs", val: "iMaster NCE / UNM2000" },
+                    { key: "Alcance físico linear", val: "Até 20 KM" }
+                ],
+                tipTitle: "Verificação no Sistema",
+                tipDesc: "Se o UNM2000/Zabbix acusar alarmes de 'Link Loss' ou 'Dying Gasp' na OLT, indica queda generalizada de energia no bairro ou fibra principal rompida por vandalismo ou acidente.",
+                tipClass: "success"
+            },
+            'cto': {
+                title: "3. Caixa CTO (Poste)",
+                badge: "Distribuição Física",
+                desc: "A Caixa CTO (Caixa de Terminação Óptica) é o ponto de acesso que fica suspenso nos postes da rua. Ela recebe a fibra óptica vinda da central e a divide, de forma puramente física (através de Splitters passivos que não usam energia), para derivar cabos pretos drops de clientes.",
+                img: "images/didactic_ftth.png",
+                specs: [
+                    { key: "Divisor de Luz (Splitter)", val: "1x16 balanceado" },
+                    { key: "Atenuação física média", val: "-14 dB" },
+                    { key: "Proteção climática", val: "IP65 (Anti-chuva)" }
+                ],
+                tipTitle: "Investigação Prática",
+                tipDesc: "Se o cliente estiver offline e a potência na CTO estiver perfeita (-19dBm), mas na casa dele der -34dBm, o cabo drop que vai do poste até a janela dele está quebrado, dobrado ou sujo.",
+                tipClass: "success"
+            },
+            'onu': {
+                title: "4. ONU / ONT (Entrada do Cliente)",
+                badge: "Equipamento do Cliente",
+                desc: "O terminal óptico receptor na casa do cliente. A ONU/ONT recebe o conector verde de fibra vindo da CTO e converte o sinal de LUZ invisível em eletricidade digital padrão Ethernet RJ45 para alimentar o roteador Wi-Fi principal.",
+                img: "images/onu_lights.png",
+                specs: [
+                    { key: "Potência Óptica Excelente", val: "-15 a -25 dBm" },
+                    { key: "Potência Óptica Degradada", val: "-28 a -35 dBm" },
+                    { key: "Luz Vermelha (LOS)", val: "Piscando (Sem sinal de luz)" }
+                ],
+                tipTitle: "Diagnóstico Rápido",
+                tipDesc: "Luz PON acesa verde fixa indica ONU conectada com sucesso na OLT. Luz LOS piscando vermelho indica perda total de sinal (cabo drop rompido na rua ou esticado demais).",
+                tipClass: "success"
+            },
+            'router': {
+                title: "5. Roteador Wi-Fi",
+                badge: "Gerenciamento Interno",
+                desc: "O cérebro digital da residência. O Roteador faz a autenticação de login (PPPoE), cria a proteção de Firewall básico, distribui endereços IPs locais (DHCP) para celulares e TVs e gerencia o Wi-Fi em Dual-Band (2.4GHz e 5GHz).",
+                img: "images/mesh.png",
+                specs: [
+                    { key: "Segurança sem fio", val: "WPA2 / WPA3 Personal" },
+                    { key: "Frequência 2.4GHz", val: "Muito alcance / Pouca velocidade" },
+                    { key: "Frequência 5GHz", val: "Pouco alcance / Altíssima velocidade" }
+                ],
+                tipTitle: "Orientação de Ouro",
+                tipDesc: "Oriente o cliente a NUNCA introduzir palitos no buraquinho de reset físico do roteador. Isso remove toda a configuração de login e obriga a enviar um técnico presencialmente.",
+                tipClass: "success"
+            },
+            'devices': {
+                title: "6. Aparelhos Finais",
+                badge: "Consumo de Banda",
+                desc: "Smartphones, TVs 4K, computadores e videogames conectados na ponta final da rede. Cada um desses aparelhos consome a internet através de requisições de pacotes lógicos no modelo Cliente-Servidor.",
+                img: "images/didactic_support.png",
+                specs: [
+                    { key: "Banda Wi-Fi 2.4G", val: "Ideal para navegação leve" },
+                    { key: "Banda Wi-Fi 5G", val: "Ideal para streaming 4K" },
+                    { key: "Conexão via Cabo UTP", val: "Recomendado para jogos competitivos" }
+                ],
+                tipTitle: "Orientação para Gamers",
+                tipDesc: "Clientes reclamando de travadas constantes em jogos (lag/ping alto) devem ser orientados a conectar seus aparelhos diretamente via cabo de rede RJ45 para eliminar perdas de pacotes do Wi-Fi.",
+                tipClass: "success"
+            }
+        };
+
+        let isFiberCut = false;
+
+        // Toggle fiber cut simulation
+        function toggleFiberCut() {
+            isFiberCut = !isFiberCut;
+            
+            const simBtn = document.getElementById('sim-cut-btn');
+            const statusPill = document.getElementById('status-pill');
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const laserLine = document.getElementById('laser-flow-line');
+            const brokenVisual = document.getElementById('broken-cable-visual');
+
+            // Node circles visual indicators
+            const oltNode = document.getElementById('olt-node');
+            const ctoNode = document.getElementById('cto-node');
+            const onuNode = document.getElementById('onu-node');
+            const routerNode = document.getElementById('router-node');
+
+            if (isFiberCut) {
+                // Fiber cut activated!
+                simBtn.innerHTML = '<i class="fa-solid fa-hammer"></i> Consertar Fibra';
+                simBtn.classList.add('active');
+                
+                statusPill.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusPill.style.color = 'var(--danger)';
+                statusPill.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+                statusDot.style.background = 'var(--danger)';
+                statusDot.style.boxShadow = '0 0 10px var(--danger)';
+                statusText.textContent = "Alarme: Cabo Rompido!";
+
+                // Stop dynamic laser flow
+                laserLine.style.animation = 'none';
+                laserLine.setAttribute('stroke', '#475569');
+                brokenVisual.style.display = 'block';
+
+                // Change device nodes to alarms!
+                oltNode.className = "node-icon-circle pulse-pink"; // OLT loses connection down link
+                ctoNode.className = "node-icon-circle"; // CTO offline
+                ctoNode.style.borderColor = "var(--danger)";
+                ctoNode.style.color = "var(--danger)";
+                
+                onuNode.className = "node-icon-circle"; // ONU LOS light active!
+                onuNode.style.borderColor = "var(--danger)";
+                onuNode.style.color = "var(--danger)";
+                onuNode.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="animation:flash 0.8s infinite alternate;"></i>';
+
+                routerNode.className = "node-icon-circle";
+                routerNode.style.borderColor = "var(--danger)";
+                routerNode.style.color = "var(--danger)";
+
+                // Update Database info to reflect the cut state!
+                networkDatabase['onu'].specs[0].val = "Sem sinal óptico (-99 dBm)";
+                networkDatabase['onu'].specs[2].val = "LOS VERMELHO ATIVO (Sem sinal)";
+                networkDatabase['onu'].tipDesc = "ALERTA ATIVO: Fibra rompida detectada no teste físico. Solicite fusão da fibra externa na rua!";
+                networkDatabase['onu'].tipClass = "danger";
+                
+                // Add keyframes styles programmatically
+                if (!document.getElementById('flash-style')) {
+                    const style = document.createElement('style');
+                    style.id = 'flash-style';
+                    style.innerHTML = `@keyframes flash { from { opacity:0.2; } to { opacity:1; } }`;
+                    document.head.appendChild(style);
+                }
+
+            } else {
+                // Fiber conserted!
+                simBtn.innerHTML = '<i class="fa-solid fa-scissors"></i> Simular Rompimento de Fibra';
+                simBtn.classList.remove('active');
+                
+                statusPill.style.background = 'rgba(16, 185, 129, 0.1)';
+                statusPill.style.color = 'var(--success)';
+                statusPill.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+                statusDot.style.background = 'var(--success)';
+                statusDot.style.boxShadow = '0 0 10px var(--success)';
+                statusText.textContent = "Rede Operando Online";
+
+                // Restart dynamic laser flow
+                laserLine.style.animation = 'flow-dots 12s infinite linear';
+                laserLine.setAttribute('stroke', 'url(#cableGradient)');
+                brokenVisual.style.display = 'none';
+
+                // Restore node styling
+                oltNode.className = "node-icon-circle pulse-purple";
+                
+                ctoNode.className = "node-icon-circle pulse-pink";
+                ctoNode.style.borderColor = "var(--border)";
+                ctoNode.style.color = "#ffffff";
+                
+                onuNode.className = "node-icon-circle pulse-cyan";
+                onuNode.style.borderColor = "var(--border)";
+                onuNode.style.color = "#ffffff";
+                onuNode.innerHTML = '<i class="fa-solid fa-network-wired"></i>';
+
+                routerNode.className = "node-icon-circle pulse-green";
+                routerNode.style.borderColor = "var(--border)";
+                routerNode.style.color = "#ffffff";
+
+                // Restore database values
+                networkDatabase['onu'].specs[0].val = "-15 a -25 dBm";
+                networkDatabase['onu'].specs[2].val = "Luz Verde PON fixa ativa";
+                networkDatabase['onu'].tipDesc = "LED PON aceso fixo verde indica sincronia perfeita com a central. LED LOS piscando vermelho significa perda total de sinal por conector quebrado ou fibra rompida na rua.";
+                networkDatabase['onu'].tipClass = "success";
+            }
+        }
+
+        // Open zoom detail panel
+        function zoomInNode(nodeId) {
+            const overlay = document.getElementById('zoom-overlay');
+            const board = document.getElementById('topology-board');
+            const data = networkDatabase[nodeId];
+
+            if (!overlay || !data) return;
+
+            // Fill content
+            document.getElementById('zoom-badge').textContent = data.badge;
+            document.getElementById('zoom-title').textContent = data.title;
+            document.getElementById('zoom-desc').textContent = data.desc;
+            document.getElementById('zoom-img').src = data.img;
+            document.getElementById('zoom-tip-title').textContent = data.tipTitle;
+            document.getElementById('zoom-tip-desc').textContent = data.tipDesc;
+
+            // Tip box alert styling
+            const tipBox = document.getElementById('zoom-tip-box');
+            if (data.tipClass === 'danger') {
+                tipBox.className = "alert-panel danger";
+            } else {
+                tipBox.className = "alert-panel";
+            }
+
+            // Specs rendering
+            const specsBox = document.getElementById('zoom-specs');
+            specsBox.innerHTML = '';
+            data.specs.forEach(spec => {
+                specsBox.innerHTML += `
+                    <div class="spec-row">
+                        <strong>${spec.key}:</strong>
+                        <span>${spec.val}</span>
+                    </div>
+                `;
+            });
+
+            // Shrink/fade board background
+            board.classList.add('zoomed');
+
+            // Open overlay
+            overlay.classList.add('active');
+        }
+
+        // Close zoom panel
+        function closeZoomPanel() {
+            const overlay = document.getElementById('zoom-overlay');
+            const board = document.getElementById('topology-board');
+
+            if (overlay) overlay.classList.remove('active');
+            if (board) board.classList.remove('zoomed');
+        }
+    </script>
+</body>
+</html>

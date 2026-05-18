@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "pdf-export-images": "^1.2.0",
+    "pdf-parse": "^2.4.5",
+    "pdfreader": "^3.0.8"
+  }
+}

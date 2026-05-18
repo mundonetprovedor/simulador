@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Bulky binaries and extraction files
+mupdf.zip
+mupdf/
+*.pdf
+*.txt
+extract_pdf.py
+extract.js
+extract_img.js
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MundoNet Academy - Treinamento de Redes para Iniciantes</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <!-- Background glowing orbs -->
+    <div class="glowing-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-network-wired"></i></div>
+                <div class="logo-text">
+                    <h2>MundoNet Academy</h2>
+                    <span>Treinamento de Redes</span>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>Progresso do Curso</span>
+                    <span id="progress-text">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-target="intro">
+                    <div class="nav-item-left"><i class="fa-solid fa-house"></i> Visão Geral</div>
+                </a>
+                
+                <div class="menu-category">Nível 1: Fundamentos</div>
+                <a href="#" class="nav-item" data-target="mod1">
+                    <div class="nav-item-left"><i class="fa-solid fa-play"></i> 1. O que é uma Rede?</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                <a href="#" class="nav-item" data-target="mod2">
+                    <div class="nav-item-left"><i class="fa-solid fa-arrow-down-up-across-line"></i> 2. Como Funciona a Internet</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                <a href="#" class="nav-item" data-target="mod3">
+                    <div class="nav-item-left"><i class="fa-solid fa-circle-info"></i> 3. Conceitos Básicos</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                <a href="#" class="nav-item" data-target="mod4">
+                    <div class="nav-item-left"><i class="fa-solid fa-server"></i> 4. Equipamentos de Rede</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                
+                <div class="menu-category">Nível 2: Infraestrutura</div>
+                <a href="#" class="nav-item" data-target="mod5">
+                    <div class="nav-item-left"><i class="fa-solid fa-ethernet"></i> 5. Cabeamento & Fibra</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                <a href="#" class="nav-item" data-target="mod6">
+                    <div class="nav-item-left"><i class="fa-solid fa-wifi"></i> 6. Wi-Fi na Prática</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                
+                <div class="menu-category">Nível 3: Triagem & NOC</div>
+                <a href="#" class="nav-item" data-target="mod7">
+                    <div class="nav-item-left"><i class="fa-solid fa-terminal"></i> 7. Diagnóstico de Rede</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                <a href="#" class="nav-item" data-target="mod8">
+                    <div class="nav-item-left"><i class="fa-solid fa-headset"></i> 8. Atendimento Técnico</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                <a href="#" class="nav-item" data-target="mod9">
+                    <div class="nav-item-left"><i class="fa-solid fa-chart-line"></i> 9. NOC & Provedor</div>
+                    <i class="fa-solid fa-circle-check check-icon"></i>
+                </a>
+                
+                <div class="menu-category">Finalização</div>
+                <a href="#" class="nav-item" data-target="avaliacao">
+                    <div class="nav-item-left"><i class="fa-solid fa-award text-warning"></i> Provinha Final & Certificado</div>
+                </a>
+                <a href="apresentacao.html" class="nav-item">
+                    <div class="nav-item-left"><i class="fa-solid fa-file-pdf"></i> Apresentação Oficial (PDF)</div>
+                </a>
+                
+                <div class="menu-category">Ferramentas Pro</div>
+                <a href="rede.html" target="_blank" class="nav-item" style="border-left: 3px solid var(--accent); background: rgba(6, 182, 212, 0.05);">
+                    <div class="nav-item-left"><i class="fa-solid fa-circle-nodes text-accent"></i> Simulador de Rede Tela Cheia</div>
+                    <i class="fa-solid fa-up-right-from-square" style="font-size: 0.75rem; opacity: 0.7; color: var(--accent);"></i>
+                </a>
+                <a href="maquete.html" target="_blank" class="nav-item" style="border-left: 3px solid var(--purple); background: rgba(168, 85, 247, 0.05); margin-top: 5px;">
+                    <div class="nav-item-left"><i class="fa-solid fa-layer-group text-purple"></i> Maquete Virtual FTTH 2.5D</div>
+                    <i class="fa-solid fa-up-right-from-square" style="font-size: 0.75rem; opacity: 0.7; color: var(--purple);"></i>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+            <header class="topbar">
+                <h1 id="page-title">Bem-vindo ao Treinamento</h1>
+                
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-name">Novato</span>
+                        <span class="user-role">Suporte Técnico N1</span>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Suporte&background=0284c7&color=fff&rounded=true" alt="Perfil">
+                </div>
+            </header>
+
+            <div class="scrollable-content">
+                
+                <!-- INTRO / OVERVIEW SECTION -->
+                <section id="intro" class="page-section active">
+                    <div class="hero-card">
+                        <div class="hero-header">
+                            <span class="badge">Curso Completo de Redes para Iniciantes</span>
+                            <h1>Formação de Suporte de Elite</h1>
+                            <p>Domine os conceitos fundamentais de redes de computadores, internet, cabeamento óptico, roteamento Wi-Fi e monitoramento NOC. Saia do zero e torne-se um técnico cirúrgico capaz de encantar clientes e resolver problemas com facilidade!</p>
+                        </div>
+
+                        <div class="overview-grid">
+                            <!-- Principle Card -->
+                            <div class="principle-card">
+                                <h3><i class="fa-solid fa-shield-halved text-accent"></i> Princípio Central da Rede</h3>
+                                <p style="font-size:0.95rem; line-height:1.6; color:var(--text-main);">
+                                    Redes são comunicação entre dispositivos que trocam informações de forma organizada para que os dados cheguem ao seu destino final com máxima qualidade.
+                                </p>
+                                <div class="principle-flow">
+                                    <div class="flow-step">
+                                        <i class="fa-solid fa-upload"></i>
+                                        <span>Envio</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right flow-arrow"></i>
+                                    <div class="flow-step">
+                                        <i class="fa-solid fa-box-open"></i>
+                                        <span>Pacotes</span>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right flow-arrow"></i>
+                                    <div class="flow-step">
+                                        <i class="fa-solid fa-download"></i>
+                                        <span>Recebimento</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mission Card -->
+                            <div class="mission-card">
+                                <h3><i class="fa-solid fa-rocket text-warning"></i> Nossa Missão Diária</h3>
+                                <p>
+                                    Garantir que as informações viajem de forma rápida, segura e estável, conectando pessoas e criando oportunidades únicas todos os dias.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="info-panels-grid">
+                            <!-- Teaching Methodology -->
+                            <div class="info-card">
+                                <h3><i class="fa-solid fa-chalkboard-user text-purple"></i> Diretrizes Metodológicas</h3>
+                                <div class="teaching-items">
+                                    <div class="teaching-item">
+                                        <div class="teaching-num">1</div>
+                                        <div class="teaching-text">Aulas e interfaces extremamente visuais</div>
+                                    </div>
+                                    <div class="teaching-item">
+                                        <div class="teaching-num">2</div>
+                                        <div class="teaching-text">Poucas siglas e termos complexos no início</div>
+                                    </div>
+                                    <div class="teaching-item">
+                                        <div class="teaching-num">3</div>
+                                        <div class="teaching-text">Abundância de exemplos e analogias da vida real</div>
+                                    </div>
+                                    <div class="teaching-item">
+                                        <div class="teaching-num">4</div>
+                                        <div class="teaching-text">Exercícios práticos e rápidos a cada módulo</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Lembre-se Panel -->
+                            <div class="info-card" style="display:flex; flex-direction:column; justify-content:center;">
+                                <div class="alert-box info" style="margin-top:0;">
+                                    <i class="fa-solid fa-lightbulb text-warning"></i>
+                                    <div>
+                                        <h5>Lembre-se sempre:</h5>
+                                        <p style="font-size:0.9rem; line-height:1.5; color:var(--text-main);">
+                                            Tudo o que a sociedade moderna faz hoje depende diretamente de redes. O seu trabalho e dedicação fazem a informação chegar onde ela é necessária com a melhor qualidade técnica!
+                                        </p>
+                                    </div>
+                                </div>
+                                <button class="btn btn-accent" style="margin-top:25px; align-self:center;" onclick="navigateTo('mod1')">
+                                    Iniciar Módulo 1 <i class="fa-solid fa-circle-play"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Network Map Card -->
+                    <div class="presentation-card" style="margin-top: 30px; min-height: auto;">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-circle-nodes text-accent"></i> Mapa de Rede Interativo MundoNet</h2>
+                            <span class="module-badge" style="background:rgba(6,182,212,0.15); border-color:rgba(6,182,212,0.3);">Clique para dar Zoom</span>
+                        </div>
+                        <div class="card-body" style="padding: 35px; flex-direction: column;">
+                            <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom: 30px; text-align: center; max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+                                A internet é uma autoestrada viva. Abaixo, representamos a conexão real desde o link de trânsito até os aparelhos em casa. **Clique em qualquer equipamento** para dar um super ZOOM e ver o raio-x dele!
+                            </p>
+                            
+                            <div class="topology-container">
+                                <svg class="topology-svg-lines" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                                    <line x1="50" y1="50" x2="950" y2="50" stroke="rgba(255,255,255,0.06)" stroke-width="6" stroke-linecap="round"></line>
+                                    <line x1="50" y1="50" x2="950" y2="50" stroke="url(#laserGradient)" stroke-width="4" stroke-linecap="round" stroke-dasharray="15 30" style="animation: laserFlow 15s infinite linear;"></line>
+                                    <defs>
+                                        <linearGradient id="laserGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="var(--accent)"></stop>
+                                            <stop offset="50%" stop-color="var(--purple)"></stop>
+                                            <stop offset="100%" stop-color="var(--success)"></stop>
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                
+                                <div class="topology-nodes">
+                                    <div class="topo-node-wrapper" onclick="zoomNode('internet')">
+                                        <div class="topo-node pulse-blue"><i class="fa-solid fa-globe"></i></div>
+                                        <span>Internet (BGP)</span>
+                                    </div>
+                                    <div class="topo-node-wrapper" onclick="zoomNode('olt')">
+                                        <div class="topo-node pulse-purple"><i class="fa-solid fa-building-columns"></i></div>
+                                        <span>OLT (Central)</span>
+                                    </div>
+                                    <div class="topo-node-wrapper" onclick="zoomNode('cto')">
+                                        <div class="topo-node pulse-pink"><i class="fa-solid fa-box-archive"></i></div>
+                                        <span>CTO (Poste)</span>
+                                    </div>
+                                    <div class="topo-node-wrapper" onclick="zoomNode('onu')">
+                                        <div class="topo-node pulse-cyan"><i class="fa-solid fa-network-wired"></i></div>
+                                        <span>ONU / ONT</span>
+                                    </div>
+                                    <div class="topo-node-wrapper" onclick="zoomNode('router')">
+                                        <div class="topo-node pulse-green"><i class="fa-solid fa-wifi"></i></div>
+                                        <span>Roteador Wi-Fi</span>
+                                    </div>
+                                    <div class="topo-node-wrapper" onclick="zoomNode('devices')">
+                                        <div class="topo-node pulse-yellow"><i class="fa-solid fa-laptop-code"></i></div>
+                                        <span>Aparelhos Finais</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 1: O QUE É UMA REDE -->
+                <section id="mod1" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">01</span> O que é uma Rede?</h2>
+                            <span class="module-badge">Fundamentos</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/didactic_osi.png" alt="Dispositivos em Rede">
+                                    <div class="visual-caption">Analogia da Conversação de Dados</div>
+                                    
+                                    <!-- Interactive Sim: Packet Emitter -->
+                                    <div class="packet-simulator">
+                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--accent)"><i class="fa-solid fa-network-wired"></i> Simulador de Envio de Pacotes</h4>
+                                        <div class="sim-network">
+                                            <div class="sim-node" id="pc1-node">
+                                                <i class="fa-solid fa-desktop"></i>
+                                                <span>Dispositivo A</span>
+                                            </div>
+                                            <div class="sim-cable"></div>
+                                            <div class="sim-packet" id="sim-packet"></div>
+                                            <div class="sim-node" id="pc2-node">
+                                                <i class="fa-solid fa-server"></i>
+                                                <span>Dispositivo B</span>
+                                            </div>
+                                        </div>
+                                        <div class="sim-logs" id="sim-logs">
+                                            [LOG] Clique no botão abaixo para disparar dados...
+                                        </div>
+                                        <button class="btn btn-primary btn-outline" id="packet-send-btn" style="width:100%; justify-content:center;">
+                                            <i class="fa-solid fa-paper-plane"></i> Enviar Pacote
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>A Linguagem das Redes</h3>
+                                    <p>
+                                        Uma <strong>Rede</strong> nada mais é do que um conjunto de dispositivos (computadores, celulares, TVs, videogames) conectados entre si conversando na mesma língua. 
+                                    </p>
+                                    <p>
+                                        A <strong>Internet</strong> é simplesmente uma gigantesca rede global formada por várias pequenas redes locais interligadas ao redor do mundo.
+                                    </p>
+                                    <p>
+                                        Os dados não viajam em blocos inteiros. Eles são quebrados em pedaços minúsculos chamados de <strong>"Pacotes"</strong>. Todo esse processo funciona sob a regra básica de <strong>Envio</strong> e <strong>Recebimento</strong>.
+                                    </p>
+                                    
+                                    <div class="script-box">
+                                        <strong>Exemplo Prático do Dia a Dia:</strong><br>
+                                        Quando você envia um áudio no WhatsApp, assiste a um vídeo no YouTube ou joga uma partida online, o seu aparelho está enviando pacotes digitais para um servidor remoto e recebendo respostas instantâneas em frações de segundos.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('intro')"><i class="fa-solid fa-chevron-left"></i> Voltar</button>
+                            <button class="btn btn-primary" onclick="navigateTo('mod2')">Próximo Módulo <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 2: COMO FUNCIONA A INTERNET -->
+                <section id="mod2" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">02</span> Como Funciona a Internet?</h2>
+                            <span class="module-badge">Fundamentos</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/bottleneck.png" alt="Fluxo da Internet">
+                                    <div class="visual-caption">O Pipeline Cliente-Servidor</div>
+                                    
+                                    <!-- Interactive Sim: Path Tracer -->
+                                    <div class="path-tracer">
+                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--primary)"><i class="fa-solid fa-route"></i> Rastreamento da Jornada de Dados</h4>
+                                        <div class="tracer-steps">
+                                            <div class="tracer-step active" data-step="1">1</div>
+                                            <div class="tracer-step" data-step="2">2</div>
+                                            <div class="tracer-step" data-step="3">3</div>
+                                            <div class="tracer-step" data-step="4">4</div>
+                                        </div>
+                                        <div class="tracer-content-box">
+                                            <h4 id="tracer-title">1. O Cliente (O Pedido)</h4>
+                                            <p id="tracer-desc">Você está no seu celular e digita 'youtube.com'. O celular é o CLIENTE. Ele cria uma requisição (um pedido) perguntando ao site do YouTube pelo vídeo. Ele envia essa requisição pelo ar até o roteador Wi-Fi.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>A Relação Cliente e Servidor</h3>
+                                    <p>
+                                        Toda a navegação na internet se baseia no modelo de <strong>Cliente e Servidor</strong>:
+                                    </p>
+                                    <ul>
+                                        <li><strong>Cliente:</strong> O seu dispositivo (celular, PC) que faz o pedido.</li>
+                                        <li><strong>Servidor:</strong> Computadores superpotentes que ficam ligados 24 horas por dia em datacenters, armazenando sites e enviando os dados pedidos.</li>
+                                    </ul>
+                                    <p>
+                                        <strong>O Caminho dos Dados:</strong> Quando você abre um site, o pacote viaja do seu dispositivo para o <strong>Provedor local (MundoNet)</strong>, que o direciona para os <strong>Backbones (Autoestradas principais)</strong> e finalmente chega ao <strong>Servidor</strong> do site.
+                                    </p>
+                                    
+                                    <div class="script-box">
+                                        <strong>Upload x Download:</strong><br>
+                                        <strong>Download</strong> é o ato de baixar informações do servidor para o seu celular (assistir a uma aula, ler notícias). <strong>Upload</strong> é o oposto: enviar dados do seu celular para a internet (enviar uma foto, fazer backup).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('mod1')"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                            <button class="btn btn-primary" onclick="navigateTo('mod3')">Próximo Módulo <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 3: CONCEITOS BÁSICOS DE REDE -->
+                <section id="mod3" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">03</span> Conceitos Básicos de Rede</h2>
+                            <span class="module-badge">Fundamentos</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/ping_test.png" alt="Conceitos Básicos">
+                                    <div class="visual-caption">IP, DNS e Estrutura Lógica</div>
+                                    
+                                    <!-- Interactive Sim: DNS Resolver -->
+                                    <div class="dns-widget">
+                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--success)"><i class="fa-solid fa-magnifying-glass"></i> Consulta Inteligente ao Servidor DNS</h4>
+                                        <div class="dns-input-group">
+                                            <input type="text" class="dns-input" id="dns-input" value="google.com" placeholder="Digite um domínio (ex: netflix.com)">
+                                            <button class="btn btn-accent terminal-btn" id="dns-translate-btn">Traduzir</button>
+                                        </div>
+                                        <div class="dns-result-box">
+                                            <div class="dns-query-line" id="dns-query-line">Digite um domínio acima e clique em 'Traduzir'...</div>
+                                            <div class="dns-ip-resolved" id="dns-ip-resolved">---</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>A Sopa de Letrinhas Descomplicada</h3>
+                                    <p>
+                                        Para que os computadores se comuniquem corretamente, eles usam quatro regras fundamentais de identidade:
+                                    </p>
+                                    <ul>
+                                        <li><strong>IP (Endereço IP):</strong> O endereço ou 'RG' de cada aparelho conectado. É único para que os pacotes saibam exatamente para onde ir.
+                                            <ul>
+                                                <li><em>Público:</em> Endereço visível em toda a internet mundial.</li>
+                                                <li><em>Privado:</em> Endereço local dentro da sua casa (ex: 192.168.1.1).</li>
+                                                <li><em>IPv4 vs IPv6:</em> O IPv4 é o padrão clássico limitado (esgotado). O IPv6 é a versão moderna ilimitada.</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>DNS:</strong> Funciona como a agenda telefônica da internet. Ele traduz nomes de sites (como google.com) nos IPs numéricos que a máquina entende.</li>
+                                        <li><strong>Gateway:</strong> A porta de saída da sua rede local (normalmente o roteador). É por onde todos os pacotes devem passar para acessar a rua.</li>
+                                        <li><strong>Máscara de Rede:</strong> Define os limites e a divisão entre a rede local e a internet externa.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('mod2')"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                            <button class="btn btn-primary" onclick="navigateTo('mod4')">Próximo Módulo <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 4: EQUIPAMENTOS DE REDE -->
+                <section id="mod4" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">04</span> Equipamentos de Rede</h2>
+                            <span class="module-badge">Fundamentos</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/onu_lights.png" alt="LEDs de Equipamento">
+                                    <div class="visual-caption">Análise de LEDs e Hardware Físico</div>
+                                    
+                                    <!-- Interactive Sim: Hardware Tabs -->
+                                    <div class="hardware-catalog">
+                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--primary)"><i class="fa-solid fa-boxes-stacked"></i> Catálogo Interativo de Hardware</h4>
+                                        <div class="hw-tabs">
+                                            <div class="hw-tab active" data-hw="modem">Modem</div>
+                                            <div class="hw-tab" data-hw="roteador">Roteador</div>
+                                            <div class="hw-tab" data-hw="switch">Switch</div>
+                                            <div class="hw-tab" data-hw="ap">AP</div>
+                                            <div class="hw-tab" data-hw="onu">ONU/OLT</div>
+                                        </div>
+                                        <div class="hw-content-card">
+                                            <h4 id="hw-title">Modem / ONT</h4>
+                                            <p id="hw-desc">Dispositivo primário que decodifica o sinal de luz do cabo de fibra óptica ou ondas de rádio em pulsos digitais elétricos de rede local.</p>
+                                            <div class="hw-lights-status" id="hw-leds">
+                                                <div class="hw-light-row">
+                                                    <div class="led-indicator green"></div>
+                                                    <div>
+                                                        <strong>Power:</strong> 
+                                                        <span style="font-size:0.75rem; color:var(--text-muted);">Aparelho ligado na eletricidade.</span>
+                                                    </div>
+                                                </div>
+                                                <div class="hw-light-row">
+                                                    <div class="led-indicator green"></div>
+                                                    <div>
+                                                        <strong>Optical/PON:</strong> 
+                                                        <span style="font-size:0.75rem; color:var(--text-muted);">Sinal de fibra óptica calibrado e respondendo na OLT.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>Quem é Quem na Casa do Cliente?</h3>
+                                    <p>
+                                        Para fazer a internet funcionar, usamos uma série de aparelhos específicos, cada um com sua função cirúrgica:
+                                    </p>
+                                    <ul>
+                                        <li><strong>Modem:</strong> Converte o sinal físico externo (fibra, rádio) para formato digital.</li>
+                                        <li><strong>Roteador:</strong> Recebe o sinal do modem, faz a autenticação e o distribui na residência.</li>
+                                        <li><strong>Switch:</strong> Conecta múltiplos aparelhos via cabo de rede na mesma rede local.</li>
+                                        <li><strong>Access Point (AP):</strong> Expande a cobertura do sinal Wi-Fi sem perdas de desempenho.</li>
+                                        <li><strong>ONU / OLT:</strong> Equipamentos de fibra óptica. A ONU fica na casa do cliente recebendo o cabo e a OLT fica na central da MundoNet controlando tudo.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('mod3')"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                            <button class="btn btn-primary" onclick="navigateTo('mod5')">Próximo Módulo <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 5: CABEAMENTO E FIBRA ÓPTICA -->
+                <section id="mod5" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">05</span> Cabeamento & Fibra Óptica</h2>
+                            <span class="module-badge">Infraestrutura</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/didactic_ftth.png" alt="FTTH Diagram">
+                                    <div class="visual-caption">Arquitetura de Fibra até a Casa</div>
+                                    
+                                    <!-- Interactive Sim: Optical Power Slider -->
+                                    <div class="optical-sim">
+                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--warning)"><i class="fa-solid fa-circle-half-stroke"></i> Simulador de Sinais Ópticos (dBm)</h4>
+                                        <div class="optical-slider-container">
+                                            <label><span>Ajustar atenuação do sinal:</span><span id="optical-slider-val">Deslize abaixo</span></label>
+                                            <input type="range" class="optical-range" id="optical-slider" min="-35" max="-10" value="-20">
+                                        </div>
+                                        <div class="optical-results">
+                                            <div class="optical-metric">
+                                                <span>Potência de Sinal</span>
+                                                <strong id="optical-power" class="text-success">-20 dBm</strong>
+                                            </div>
+                                            <div class="optical-metric">
+                                                <span>Status da Conexão</span>
+                                                <strong id="optical-status" class="text-success font-bold">PON (Excelente)</strong>
+                                            </div>
+                                        </div>
+                                        <div class="wifi-explanation-box" id="optical-desc" style="font-size:0.75rem; line-height:1.45;">
+                                            Sinal ideal! A luz está perfeita. A ONU sincronizará de forma instantânea na OLT e a conexão funcionará sem lentidão ou quedas.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>A Autoestrada da Luz</h3>
+                                    <p>
+                                        Existem dois tipos principais de fios no nosso suporte diário:
+                                    </p>
+                                    <ul>
+                                        <li><strong>Cabo de Rede UTP (CAT5e / CAT6):</strong> Utiliza cobre e eletricidade. É o cabo tradicional azul ou amarelo com conector <strong>RJ45</strong> que liga seu notebook ao roteador. Rápido e imune a paredes.</li>
+                                        <li><strong>Fibra Óptica:</strong> Utiliza vidro flexível e pulsos de <strong>luz</strong> (lasers). Suporta distâncias enormes e velocidades absurdas sem sofrer interferência.</li>
+                                    </ul>
+                                    <p>
+                                        <strong>Potência Óptica (RX / TX):</strong> Medida na escala negativa de <strong>dBm</strong>. O sinal ideal na casa do cliente fica entre <strong>-15 e -25 dBm</strong>. Se ultrapassar -28 dBm, a ONU começa a sofrer quedas e lentidão extrema devido a atenuação (sinal atenuado por conector sujo ou dobra no cabo).
+                                    </p>
+                                    
+                                    <div class="alert-box success" style="margin-top:10px;">
+                                        <i class="fa-solid fa-circle-check"></i>
+                                        <div>
+                                            <h5>Prática Recomendada</h5>
+                                            <p style="font-size:0.85rem; line-height:1.4;">
+                                                Sempre confira as fusões de caixas externas (CTO e splitters) se múltiplos clientes na mesma rua reclamarem de quedas e sinal atenuado simultaneamente!
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('mod4')"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                            <button class="btn btn-primary" onclick="navigateTo('mod6')">Próximo Módulo <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 6: WI-FI NA PRÁTICA -->
+                <section id="mod6" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">06</span> Dominando a Tecnologia Wi-Fi</h2>
+                            <span class="module-badge">Infraestrutura</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/didactic_wifi.png" alt="Wi-Fi Regador Analogy">
+                                    <div class="visual-caption">A Regra de Ouro da Transmissão Aérea</div>
+                                    
+                                    <!-- Interactive Sim: WiFi Waves -->
+                                    <div class="wifi-sim">
+                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--accent)"><i class="fa-solid fa-tower-broadcast"></i> Testador de Frequências Wi-Fi (2.4Ghz vs 5Ghz)</h4>
+                                        <div class="wifi-toggle-group">
+                                            <div class="wifi-toggle-btn active" data-freq="24">Modo 2.4 GHz</div>
+                                            <div class="wifi-toggle-btn" data-freq="5">Modo 5 GHz</div>
+                                        </div>
+                                        <div class="wifi-canvas-sim">
+                                            <div class="wifi-source"><i class="fa-solid fa-rss"></i></div>
+                                            <div class="wifi-wave-overlay" id="wifi-waves">
+                                                <div class="wifi-wave-ring" style="animation-duration:3.5s; border-color:var(--success)"></div>
+                                                <div class="wifi-wave-ring" style="animation-duration:3.5s; animation-delay:1.1s; border-color:var(--success)"></div>
+                                            </div>
+                                            <div class="wifi-wall"></div>
+                                            <div class="wifi-wall-label">PAREDE</div>
+                                            <div class="wifi-receiver">
+                                                <i class="fa-solid fa-mobile-screen" id="client-device"></i>
+                                                <span id="client-signal-text">Forte (2.4GHz)</span>
+                                            </div>
+                                        </div>
+                                        <div class="optical-results" style="margin-bottom:12px;">
+                                            <div class="optical-metric">
+                                                <span>Alcance do Sinal</span>
+                                                <strong id="wifi-range-val" style="font-size:0.85rem;">Até 70m (Ótimo alcance)</strong>
+                                            </div>
+                                            <div class="optical-metric">
+                                                <span>Velocidade Máxima</span>
+                                                <strong id="wifi-speed-val" style="font-size:0.85rem; color:var(--success);">Cerca de 50-90 Mbps</strong>
+                                            </div>
+                                        </div>
+                                        <div class="wifi-explanation-box" id="wifi-explain" style="font-size:0.75rem; line-height:1.45;">
+                                            <strong>Frequência 2.4GHz:</strong> Ondas mais longas e espessas. Passam facilmente por paredes de concreto, espelhos e portas. Ideal para cobrir a casa toda, mas a velocidade máxima é baixa e sofre com interferência de aparelhos sem fio vizinhos e micro-ondas.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>A Grande Confusão no Atendimento</h3>
+                                    <p>
+                                        Grave essa regra na sua mente: <strong>Muitas vezes o problema não é a internet, é o Wi-Fi!</strong>
+                                    </p>
+                                    <p>
+                                        Os roteadores modernos emitem o sinal através de duas 'cordinhas invisíveis' que funcionam de formas opostas:
+                                    </p>
+                                    <ul>
+                                        <li><strong>2.4GHz:</strong> É como o som grave (grosso) de um alto-falante. Ele viaja longe e atravessa barreiras como paredes e espelhos. No entanto, é lento e sofre muita interferência de redes vizinhas.</li>
+                                        <li><strong>5GHz (WPA2 / WPA3):</strong> É como o som agudo (fino). Permite velocidades altíssimas perfeitas para streaming e downloads robustos. No entanto, suas ondas são curtas e <strong>não conseguem passar por obstáculos</strong>. Se fechar a porta do quarto, o sinal cai drasticamente.</li>
+                                    </ul>
+                                    <div class="script-box">
+                                        <strong>Analogia do Regador:</strong><br>
+                                        A internet da MundoNet é como a água limpa chegando encanada na rua até a torneira da casa do cliente. O roteador Wi-Fi é o regador do jardim que espalha essa água pelo ar. Se o cliente estiver muito longe no quintal e a água não respingar nele, a culpa não é da água da rua!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('mod5')"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                            <button class="btn btn-primary" onclick="navigateTo('mod7')">Próximo Módulo <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 7: DIAGNÓSTICO DE REDE -->
+                <section id="mod7" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">07</span> Diagnóstico de Rede</h2>
+                            <span class="module-badge">Triagem & NOC</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/didactic_ping.png" alt="Console Terminal">
+                                    <div class="visual-caption">Diagnósticos Lógicos via Linha de Comando</div>
+                                    
+                                    <!-- Interactive Sim: Terminal Cmd -->
+                                    <div class="terminal-simulator">
+                                        <div class="terminal-header">
+                                            <span class="terminal-title">bash - MundoNet Diagnostic Console</span>
+                                            <div class="terminal-dots">
+                                                <div class="terminal-dot dot-red"></div>
+                                                <div class="terminal-dot dot-yellow"></div>
+                                                <div class="terminal-dot dot-green"></div>
+                                            </div>
+                                        </div>
+                                        <div class="terminal-body" id="terminal-output">
+                                            <div>MundoNet Diagnostics Shell [v1.0.4]</div>
+                                            <div>Digite 'help' para listar os comandos.</div>
+                                            <div>&nbsp;</div>
+                                        </div>
+                                        <div class="terminal-input-row">
+                                            <span class="terminal-prompt">diagnostics:~$</span>
+                                            <input type="text" class="terminal-cmd-input" id="term-cmd-input" placeholder="help" value="ping google.com">
+                                            <button class="btn btn-accent terminal-btn" id="term-send-btn" style="padding:6px 12px; font-size:0.75rem;">Executar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>Como Investigar Problemas Lógicos</h3>
+                                    <p>
+                                        Quando um cliente relata 'joguinho travando' ou 'internet oscilando', nós temos que usar ferramentas lógicas para descobrir a origem exata do problema:
+                                    </p>
+                                    <ul>
+                                        <li><strong>Ping:</strong> Testa o tempo de atraso ou resposta da internet. Medido em milissegundos (ms).
+                                            <ul>
+                                                <li><em>Excelente:</em> &lt; 20ms</li>
+                                                <li><em>Bom:</em> 20ms a 50ms</li>
+                                                <li><em>Lento:</em> &gt; 100ms (Jogos travam/lag)</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>Tracert (Trace Route):</strong> Rastreia todo o percurso físico feito pelos pacotes através dos postes, centrais e autoestradas mundiais até o servidor final. Útil para descobrir gargalos de rota.</li>
+                                        <li><strong>Jitter:</strong> Mede a variação ou a irregularidade do Ping. Se o Ping pula repentinamente de 15ms para 300ms, o Jitter é alto e causará travamentos.</li>
+                                        <li><strong>Perda de Pacotes:</strong> Ocorre quando pedaços de dados se perdem no caminho físico. Um sinal grave de cabo de fibra atenuado.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('mod6')"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                            <button class="btn btn-primary" onclick="navigateTo('mod8')">Próximo Módulo <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 8: ATENDIMENTO TÉCNICO E TRIAGEM -->
+                <section id="mod8" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">08</span> Atendimento Técnico & Triagem</h2>
+                            <span class="module-badge">Triagem & NOC</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/didactic_support.png" alt="Suporte Técnico">
+                                    <div class="visual-caption">Postura e Escalonamento Inteligente</div>
+                                    
+                                    <!-- Interactive Sim: Decision Tree -->
+                                    <div class="tech-flowchart">
+                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--purple)"><i class="fa-solid fa-sitemap"></i> Simulador de Árvore de Decisão do Suporte</h4>
+                                        <div class="tech-question-card">
+                                            <h4>Passo 1: Qual o status das luzes no aparelho?</h4>
+                                            <div class="tech-options" style="margin-bottom:15px;">
+                                                <div class="tech-option" data-group="q1" data-val="los">LOS Vermelho Piscando</div>
+                                                <div class="tech-option" data-group="q1" data-val="green">PON Verde Acesa Fixo</div>
+                                            </div>
+                                            
+                                            <h4>Passo 2: O que o sistema IXC/Contrato acusa?</h4>
+                                            <div class="tech-options">
+                                                <div class="tech-option" data-group="q2" data-val="offline">Status Offline na OLT</div>
+                                                <div class="tech-option" data-group="q2" data-val="bloqueado">Status Retido IP Bloqueio (Faturas)</div>
+                                                <div class="tech-option" data-group="q2" data-val="lento">Status Online (Consumo e Wi-Fi Lento)</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="dns-result-box" id="tech-result-box" style="display:none; min-height:100px;">
+                                            <h4 id="tech-outcome-title" style="font-size:0.9rem; margin-bottom:6px;">---</h4>
+                                            <p id="tech-outcome-desc" style="font-size:0.75rem; line-height:1.45; margin:0;">---</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>A Arte da Investigação no Atendimento</h3>
+                                    <p>
+                                        Quando o cliente liga ou entra em contato no WhatsApp, você deve agir como um verdadeiro <strong>detetive técnico</strong>:
+                                    </p>
+                                    <ul>
+                                        <li><strong>Coleta Eficiente:</strong> Peça os dados básicos (Nome, CPF) e busque-o rapidamente no sistema.</li>
+                                        <li><strong>Perguntas Inteligentes:</strong> Evite termos complexos e foque nas analogias e perguntas diretas:
+                                            <ul>
+                                                <li><em>"As luzes na frente do aparelho estão acesas?"</em></li>
+                                                <li><em>"Tem alguma luzinha vermelha piscando?" (Verificação física)</em></li>
+                                                <li><em>"A lentidão afeta todos os aparelhos ou só a TV de longe?"</em></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        <strong>Mapeamento do Problema:</strong> Identifique cirurgicamente se a falha é no <strong>Wi-Fi do cliente</strong>, no <strong>cabo drop (físico externo)</strong>, na <strong>rota do provedor</strong> ou uma <strong>pendência de faturamento (bloqueio por inadimplência)</strong>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('mod7')"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                            <button class="btn btn-primary" onclick="navigateTo('mod9')">Próximo Módulo <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 9: INTRODUÇÃO AO PROVEDOR DE INTERNET / NOC -->
+                <section id="mod9" class="page-section">
+                    <div class="presentation-card">
+                        <div class="card-header">
+                            <h2><span class="module-badge">09</span> Introdução ao Provedor & NOC</h2>
+                            <span class="module-badge">Triagem & NOC</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-grid">
+                                <div class="card-visual">
+                                    <img src="images/zabbix.png" alt="NOC Central">
+                                    <div class="visual-caption">Console Zabbix / Grafana de Monitoramento</div>
+                                    
+                                    <!-- Interactive Sim: NOC live panel -->
+                                    <div class="noc-sim">
+                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--accent)"><i class="fa-solid fa-desktop"></i> Simulador de Monitoramento NOC Live</h4>
+                                        <div class="noc-grid">
+                                            <div class="noc-card">
+                                                <span>Latência Geral</span>
+                                                <strong id="noc-latency-val" class="text-accent">15 ms</strong>
+                                                <div class="noc-sparkline" id="lat-spark">
+                                                    <svg width="180" height="40"><path d="M 0 34 L 30 35 L 60 33 L 90 34 L 120 32 L 150 34 L 180 34" fill="none" stroke="#06b6d4" stroke-width="2.5" /></svg>
+                                                </div>
+                                            </div>
+                                            <div class="noc-card">
+                                                <span>Consumo do Link</span>
+                                                <strong id="noc-usage-val" class="text-purple">78 Gbps</strong>
+                                                <div class="noc-sparkline" id="use-spark">
+                                                    <svg width="180" height="40"><path d="M 0 12 L 30 11 L 60 10 L 90 10 L 120 9 L 150 9 L 180 8" fill="none" stroke="#a855f7" stroke-width="2.5" /></svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="noc-alarms">
+                                            <h5>Alarmes Ativos</h5>
+                                            <div class="noc-alarm-list" id="noc-alarm-list">
+                                                <div style="color:var(--success)">✅ Todos os links principais operando com estabilidade.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-content">
+                                    <h3>A Retaguarda do Provedor</h3>
+                                    <p>
+                                        Como a internet chega ao provedor MundoNet e é monitorada?
+                                    </p>
+                                    <ul>
+                                        <li><strong>Links de Trânsito IP & IX (Internet Exchange):</strong> A MundoNet compra conexões massivas das gigantes globais (Trânsito) e se conecta a pontos de troca de tráfego locais (IX.br) para acessar os servidores do Facebook, Netflix e Google de forma super rápida e barata.</li>
+                                        <li><strong>CGNAT:</strong> Tecnologia que compartilha um único IP público mundial para dezenas de conexões de clientes domésticos, economizando endereços IPv4 escassos.</li>
+                                        <li><strong>NOC (Centro de Operações de Rede):</strong> Nossa sala de controle. Através de sistemas como <strong>Zabbix</strong>, <strong>PRTG</strong>, <strong>Grafana</strong> e <strong>Smokeping</strong>, a equipe acompanha latências, oscilações no tráfego, alarmes de queda de OLTs e falhas elétricas em postes e repetidores em tempo real.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-outline" onclick="navigateTo('mod8')"><i class="fa-solid fa-chevron-left"></i> Anterior</button>
+                            <button class="btn btn-primary" onclick="navigateTo('avaliacao')">Avaliação Final <i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- MODULE 10: QUIZ / AVALIACAO -->
+                <section id="avaliacao" class="page-section">
+                    
+                    <!-- Welcome / Init quiz -->
+                    <div class="quiz-welcome-card" id="quiz-welcome">
+                        <i class="fa-solid fa-award text-warning" style="font-size:3.5rem; margin-bottom:20px; text-shadow:0 0 20px var(--warning-glow);"></i>
+                        <h2>Provinha Final MundoNet Academy</h2>
+                        <p>
+                            Você concluiu toda a jornada teórica de redes! Chegou a hora de provar seus conhecimentos práticos. Responda a 10 perguntas rápidas com base nas analogias e conceitos explicados nos módulos.
+                        </p>
+                        <p style="font-size:0.95rem; color:var(--accent); font-weight:700;">
+                            Atingindo pontuação igual ou superior a 80% (8 acertos), você receberá seu Certificado Oficial de Conclusão!
+                        </p>
+                        <div class="quiz-setup">
+                            <label for="student-name-input">Seu nome completo para o certificado:</label>
+                            <input type="text" class="quiz-name-input" id="student-name-input" placeholder="Digite seu nome aqui...">
+                        </div>
+                        <button class="btn btn-accent" style="font-size:1.05rem;" onclick="startQuiz()">
+                            Iniciar Provinha Final <i class="fa-solid fa-circle-play"></i>
+                        </button>
+                    </div>
+
+                    <!-- Active Quiz Card -->
+                    <div class="quiz-card" id="quiz-card" style="display:none;">
+                        <div class="quiz-nav-header">
+                            <span class="quiz-question-num" id="quiz-q-num">Questão 1 de 10</span>
+                            <span class="quiz-timer"><i class="fa-regular fa-clock"></i> Simulador Ativo</span>
+                        </div>
+                        <h3 class="quiz-q-text" id="quiz-question-text">Questão de Exemplo?</h3>
+                        
+                        <div class="quiz-options-list" id="quiz-options">
+                            <!-- Options rendered dynamically -->
+                        </div>
+                        
+                        <div class="quiz-footer">
+                            <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Selecione com atenção. Não há tempo limite!</span>
+                            <button class="btn btn-primary" onclick="nextQuizQuestion()">
+                                Avançar <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Ended / Results -->
+                    <div class="quiz-ended-card" id="quiz-ended" style="display:none;">
+                        <div id="cert-success-box" style="display:none;">
+                            <i class="fa-solid fa-circle-check text-success" style="font-size:3.5rem; margin-bottom:15px;"></i>
+                            <h2>Parabéns! Você foi Aprovado!</h2>
+                            <p id="quiz-score-summary">Você acertou 10 de 10 questões.</p>
+                            
+                            <!-- Graduation Certificate -->
+                            <div class="cert-container">
+                                <div class="cert-seal">
+                                    <i class="fa-solid fa-certificate"></i>
+                                </div>
+                                <div class="cert-header">MundoNet Academy</div>
+                                <div class="cert-title">Certificado de Conclusão</div>
+                                <p class="cert-desc">Certificamos com excelência técnica que</p>
+                                <div class="cert-name" id="cert-student-name">João Silva</div>
+                                <p class="cert-desc">
+                                    concluiu com êxito a formação intensiva em **Suporte Técnico N1 & Introdução a Redes**, dominando conceitos de fibra óptica, IP, Wi-Fi e monitoramento NOC.
+                                </p>
+                                <div class="cert-signature-row">
+                                    <div class="cert-sig-col">
+                                        <div class="cert-sig-line"></div>
+                                        <div class="cert-sig-title">Diretoria MundoNet</div>
+                                    </div>
+                                    <div class="cert-sig-col">
+                                        <div style="font-family:monospace; font-size:0.75rem; margin-bottom:8px;" id="cert-date">18/05/2026</div>
+                                        <div class="cert-sig-title">Data de Emissão</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="display:flex; justify-content:center; gap:16px;">
+                                <button class="btn btn-accent" onclick="printCertificate()"><i class="fa-solid fa-print"></i> Imprimir Certificado</button>
+                                <button class="btn btn-outline" onclick="restartQuiz()"><i class="fa-solid fa-rotate-left"></i> Refazer Prova</button>
+                            </div>
+                        </div>
+
+                        <div id="cert-failure-box" style="display:none;">
+                            <i class="fa-solid fa-triangle-exclamation text-danger" style="font-size:3.5rem; margin-bottom:15px;"></i>
+                            <h2>Não foi dessa vez!</h2>
+                            <p>Você não atingiu o mínimo de 8 acertos (80%) para obter o certificado.</p>
+                            <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:30px;">
+                                Recomendamos que você revise com carinho os tópicos de Wi-Fi, LEDs da ONU e o IP de bloqueio 172 no sistema e tente novamente.
+                            </p>
+                            <button class="btn btn-primary" onclick="restartQuiz()"><i class="fa-solid fa-rotate-left"></i> Tentar Novamente</button>
+                        </div>
+                    </div>
+
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Interactive Zoom Modal -->
+    <div id="zoom-modal" class="zoom-modal-overlay" onclick="closeZoomNode(event)">
+        <div class="zoom-modal-content" onclick="event.stopPropagation()">
+            <button class="zoom-close-btn" onclick="closeZoomNode(event)"><i class="fa-solid fa-xmark"></i></button>
+            <div class="zoom-modal-grid">
+                <div class="zoom-modal-visual" id="zoom-modal-img-container">
+                    <img id="zoom-modal-img" src="" alt="Detalhe do Equipamento">
+                </div>
+                <div class="zoom-modal-info">
+                    <span class="badge" id="zoom-modal-badge" style="display:inline-block; margin-bottom:10px;">Equipamento</span>
+                    <h2 id="zoom-modal-title" style="margin-bottom:12px; font-size:1.6rem; color:#ffffff;">Nome do Aparelho</h2>
+                    <p id="zoom-modal-desc" style="font-size:0.95rem; line-height:1.6; color:var(--text-main); margin-bottom:15px;">Descrição técnica detalhada...</p>
+                    
+                    <div class="zoom-specs" id="zoom-modal-spec-box">
+                        <!-- Specs dynamic HTML -->
+                    </div>
+                    
+                    <div class="alert-box success" id="zoom-modal-tip-box" style="margin-top:20px;">
+                        <i class="fa-solid fa-lightbulb text-warning" style="font-size:1.3rem; margin-top:2px;"></i>
+                        <div>
+                            <h5 id="zoom-modal-tip-title" style="font-size:0.95rem; font-weight:700; color:#ffffff; margin-bottom:4px;">Dica do Suporte N1</h5>
+                            <p id="zoom-modal-tip-desc" style="margin:0; font-size:0.85rem; line-height:1.45; color:var(--text-main);">Recomendação importante do dia a dia...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>

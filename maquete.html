@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MundoNet - Maquete Física de Infraestrutura FTTH</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #060913;
+            --bg-card: rgba(13, 20, 38, 0.9);
+            --bg-glass: rgba(10, 16, 32, 0.7);
+            
+            --primary: #3b82f6;
+            --accent: #06b6d4;
+            --purple: #a855f7;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.06);
+            --yellow-fiber: #facc15;
+            --green-fiber: #22c55e;
+            --black-drop: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(rgba(59, 130, 246, 0.08) 1.5px, transparent 1.5px),
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 40%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.1) 0px, transparent 40%);
+            background-size: 30px 30px, 100% 100%, 100% 100%;
+        }
+
+        header {
+            height: 75px;
+            background: rgba(8, 12, 24, 0.6);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            position: relative;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-left i {
+            font-size: 1.8rem;
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
+        .header-left h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-control {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-control:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-1px);
+        }
+
+        .btn-control.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent);
+        }
+
+        /* Master Workspace */
+        .workspace {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            height: calc(100vh - 75px);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* SVG Cable Engine Container */
+        .cables-svg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 25;
+            overflow: visible;
+        }
+
+        /* Diagram Drawing Board */
+        .diagram-board {
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Stage Containers */
+        .stage-section {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .stage-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+        }
+
+        /* 1. CENTRAL / NOC DETAILS */
+        .noc-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* Detailed Physical Rack Cabinet */
+        .physical-rack {
+            background: #090e18;
+            border: 3px solid #1e293b;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8), 0 10px 25px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .rack-rail-left, .rack-rail-right {
+            position: absolute;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: #334155;
+        }
+        .rack-rail-left { left: 8px; }
+        .rack-rail-right { right: 8px; }
+
+        .hardware-unit {
+            background: #020617;
+            border: 1.5px solid #334155;
+            border-radius: 6px;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .hardware-unit:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        .unit-name {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .unit-name span {
+            font-size: 0.55rem;
+            color: var(--text-muted);
+        }
+
+        /* Ports Grid on Hardware */
+        .ports-bank {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            background: rgba(0,0,0,0.4);
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .hardware-port {
+            width: 12px;
+            height: 12px;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 2px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .hardware-port.optical {
+            border-radius: 50%;
+            background: #022c22;
+            border-color: #059669;
+        }
+
+        .hardware-port.active::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 5px var(--success);
+        }
+
+        .hardware-port.optical.active::after {
+            background: var(--accent);
+            box-shadow: 0 0 5px var(--accent);
+        }
+
+        .hardware-port.danger-led::after {
+            background: var(--danger) !important;
+            box-shadow: 0 0 5px var(--danger) !important;
+        }
+
+        /* ODF/DIO (Optical Distribution Frame) Patch Panel */
+        .dio-unit {
+            background: #0f172a;
+            border: 1.5px solid #475569;
+            border-radius: 6px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .dio-ports {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+        }
+
+        .dio-adapter {
+            height: 12px;
+            background: #059669; /* SC-APC Green */
+            border: 1px solid #10b981;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        /* BGP Graph Screen */
+        .bgp-screen {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .screen-graph {
+            flex: 1;
+            position: relative;
+            background: repeating-linear-gradient(0deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 1px, transparent 1px, transparent 15px);
+            border-radius: 6px;
+            overflow: hidden;
+            min-height: 100px;
+        }
+
+        .graph-line-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 2. RUA / POSTES IN-DEPTH SCENERY */
+        .street-scenery {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            min-height: 250px;
+            padding-bottom: 20px;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.4) 0%, transparent 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.02);
+            position: relative;
+        }
+
+        .street-pole {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .pole-cross {
+            width: 80px;
+            height: 8px;
+            background: #475569;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            justify-content: space-around;
+            padding: 0 10px;
+        }
+
+        .insulator {
+            width: 8px;
+            height: 8px;
+            background: #94a3b8;
+            border-radius: 50%;
+            margin-top: -6px;
+        }
+
+        .pole-shaft {
+            width: 10px;
+            height: 160px;
+            background: linear-gradient(to bottom, #475569 0%, #0f172a 100%);
+        }
+
+        /* Detailed Caixa de Emenda (CEO) Box Open */
+        .detailed-ceo-box {
+            position: absolute;
+            top: 25px;
+            background: #f59e0b;
+            border: 2px solid #b45309;
+            color: #000;
+            width: 32px;
+            height: 45px;
+            border-radius: 6px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .detailed-ceo-box:hover {
+            transform: scale(1.1);
+        }
+
+        /* Detailed Caixa CTO Splitter Open */
+        .detailed-cto-panel {
+            position: absolute;
+            top: 25px;
+            background: #020617;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            width: 75px;
+            height: 90px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: 0 12px 24px rgba(6, 182, 212, 0.25);
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .detailed-cto-panel:hover {
+            transform: translateY(-4px) scale(1.05);
+            border-color: #ffffff;
+        }
+
+        .cto-header {
+            font-size: 0.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-align: center;
+            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+            padding-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .cto-ports-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
+            flex: 1;
+        }
+
+        .cto-port {
+            height: 10px;
+            background: #059669; /* SC-APC Green */
+            border: 1px solid #10b981;
+            border-radius: 1px;
+            position: relative;
+        }
+
+        .cto-port.active::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 3px var(--success);
+        }
+
+        .ladder-technician {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        .ladder-wood {
+            width: 18px;
+            height: 120px;
+            border-left: 3px solid #64748b;
+            border-right: 3px solid #64748b;
+            background-image: linear-gradient(to bottom, transparent 85%, #64748b 85%);
+            background-size: 100% 12px;
+        }
+
+        .tech-character {
+            position: absolute;
+            bottom: 50px;
+            font-size: 1.2rem;
+            color: var(--warning);
+            text-shadow: 0 0 10px var(--warning);
+            animation: tech-float 2s infinite alternate;
+        }
+
+        /* 3. RESIDENCIAS & SUAS ONUS/ROTEADORES INTERNOS */
+        .residential-stage {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .house-hardware-card {
+            background: rgba(9, 14, 28, 0.85);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+
+        .house-hardware-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .house-hardware-card.danger-state {
+            border-color: rgba(239, 68, 68, 0.3);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+        }
+
+        .house-hardware-card.warning-state {
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+        }
+
+        .house-title-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding-bottom: 10px;
+        }
+
+        .house-tag {
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .house-db-box {
+            font-size: 0.72rem;
+            font-family: monospace;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        .house-hardware-card.danger-state .house-db-box {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.15);
+        }
+
+        .house-hardware-card.warning-state .house-db-box {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.15);
+        }
+
+        /* Detailed Physical ONU/ONT Inside House */
+        .interior-devices-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .physical-onu-box {
+            background: #f8fafc;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            color: #0f172a;
+            position: relative;
+        }
+
+        .onu-title {
+            font-size: 0.58rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 3px;
+        }
+
+        .onu-leds-line {
+            display: flex;
+            justify-content: space-around;
+            padding: 2px 0;
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+
+        .onu-led-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #cbd5e1;
+        }
+
+        .onu-led-dot.active-green {
+            background: var(--success);
+            box-shadow: 0 0 5px var(--success);
+        }
+
+        .onu-led-dot.active-red {
+            background: var(--danger);
+            box-shadow: 0 0 5px var(--danger);
+            animation: led-blink 0.5s infinite alternate;
+        }
+
+        .onu-ports-bottom {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+
+        /* Fiber input adapter at the bottom of the ONU */
+        .onu-fiber-port {
+            width: 10px;
+            height: 10px;
+            background: #059669; /* SC-APC adapter */
+            border-radius: 2px 2px 0 0;
+            margin: 0 auto;
+        }
+
+        /* Physical Router Box */
+        .physical-router-box {
+            background: #1e293b;
+            border: 2px solid #475569;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .router-leds {
+            display: flex;
+            gap: 3px;
+            padding: 2px;
+            background: #0f172a;
+            border-radius: 3px;
+        }
+
+        .router-led-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 3px var(--success);
+        }
+
+        .router-ports-back {
+            display: flex;
+            gap: 3px;
+            margin-top: auto;
+            justify-content: center;
+        }
+
+        .router-rj45-port {
+            width: 8px;
+            height: 8px;
+            background: #0f172a;
+            border: 1px solid #64748b;
+            border-radius: 1px;
+        }
+
+        .router-rj45-port.active {
+            border-color: var(--warning);
+        }
+
+        /* Wi-Fi Antenna Visual */
+        .router-antenna {
+            position: absolute;
+            top: -15px;
+            width: 2px;
+            height: 15px;
+            background: #475569;
+        }
+        .ant-1 { left: 8px; }
+        .ant-2 { right: 8px; }
+
+        .device-icon-list {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            border-top: 1px dashed rgba(255,255,255,0.05);
+            padding-top: 8px;
+        }
+
+        .device-icon-item {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 3px 6px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .device-icon-item.active {
+            color: var(--accent);
+            border-color: rgba(6, 182, 212, 0.2);
+            background: rgba(6, 182, 212, 0.05);
+        }
+
+        /* 4. DENSE SIDEBAR LENS & CONTROL */
+        .lens-panel {
+            background: rgba(8, 12, 24, 0.85);
+            border-left: 1px solid var(--border);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            backdrop-filter: blur(15px);
+            z-index: 50;
+        }
+
+        .lens-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .lens-title i {
+            color: var(--accent);
+        }
+
+        .focus-screen {
+            background: linear-gradient(135deg, rgba(20, 30, 60, 0.6) 0%, rgba(8, 12, 24, 0.8) 100%);
+            border: 1.5px solid var(--accent);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .focus-screen h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .focus-screen span {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.05em;
+        }
+
+        .focus-parameters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .param-cell {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .param-cell span {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .param-cell strong {
+            font-size: 0.8rem;
+            color: #ffffff;
+            font-family: monospace;
+        }
+
+        .focus-explanation {
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: var(--text-main);
+        }
+
+        .tip-banner {
+            background: rgba(16, 185, 129, 0.04);
+            border-left: 3px solid var(--success);
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            line-height: 1.4;
+        }
+
+        .tip-banner.danger {
+            background: rgba(239, 68, 68, 0.04);
+            border-left-color: var(--danger);
+        }
+
+        .tip-banner strong {
+            display: block;
+            margin-bottom: 2px;
+            color: #ffffff;
+        }
+
+        .incident-card {
+            background: rgba(255,255,255,0.01);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .incident-card h4 {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .btn-scenario {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .btn-scenario:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-scenario:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .btn-scenario.active {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.25);
+            color: var(--danger);
+        }
+
+        /* SVG Dynamic Flows Styles */
+        .flowing-wire-path {
+            stroke: var(--accent);
+            stroke-width: 2.5;
+            fill: none;
+            stroke-dasharray: 6 12;
+            animation: flow-path-animation 1.5s infinite linear;
+        }
+
+        .flowing-wire-path.yellow {
+            stroke: var(--yellow-fiber);
+            stroke-width: 2;
+        }
+
+        .flowing-wire-path.green {
+            stroke: var(--green-fiber);
+            stroke-width: 2;
+        }
+
+        .flowing-wire-path.drop {
+            stroke: var(--accent);
+            stroke-width: 2.2;
+            stroke-dasharray: 4 10;
+        }
+
+        .flowing-wire-path.danger {
+            stroke: var(--danger) !important;
+            stroke-dasharray: 4 4 !important;
+            animation: none !important;
+        }
+
+        /* Static Cable Styles when flow is paused/outage */
+        .cables-static {
+            stroke: var(--accent);
+            stroke-width: 2.2;
+            fill: none;
+            transition: stroke 0.3s;
+        }
+
+        .cables-static.yellow {
+            stroke: var(--yellow-fiber);
+            stroke-width: 2;
+        }
+
+        .cables-static.green {
+            stroke: var(--green-fiber);
+            stroke-width: 2;
+        }
+
+        .cables-static.danger {
+            stroke: var(--danger) !important;
+            stroke-dasharray: 4 4 !important;
+        }
+
+        @keyframes flow-path-animation {
+            to { stroke-dashoffset: -36; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <i class="fa-solid fa-network-wired"></i>
+            <div>
+                <h1 style="font-weight: 900;">Maquete Física FTTH MundoNet</h1>
+                <p style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Simulação Pixel-Perfeita com Racks, DIO, CTO e Drops Ativos</p>
+            </div>
+        </div>
+        
+        <div class="header-controls">
+            <button class="btn-control active" id="flow-toggle" onclick="toggleFlows()">
+                <i class="fa-solid fa-circle-nodes"></i> Pacotes de Dados: Ativos
+            </button>
+            <button class="btn-control" onclick="resetAll()">
+                <i class="fa-solid fa-arrows-rotate"></i> Resetar Maquete
+            </button>
+        </div>
+    </header>
+
+    <div class="workspace">
+
+        <!-- Diagram Board Panel -->
+        <div class="diagram-board">
+            
+            <!-- Interactive SVGs Layer for cables drawing -->
+            <svg class="cables-svg-layer" id="cables-layer">
+                <defs>
+                    <linearGradient id="fiberGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="var(--yellow-fiber)"></stop>
+                        <stop offset="100%" stop-color="var(--green-fiber)"></stop>
+                    </linearGradient>
+                </defs>
+                
+                <!-- Paths will be injected dynamically via JavaScript to ensure 100% precision on any screen size -->
+            </svg>
+            
+            <!-- STAGE 1: CENTRAL / NOC -->
+            <div class="stage-section" onclick="focusObject('noc_central')">
+                <div class="stage-title"><i class="fa-solid fa-building-user text-primary"></i> 1. Central do Provedor (NOC & Datacenter)</div>
+                
+                <div class="noc-grid">
+                    <!-- Physical Server Rack -->
+                    <div class="physical-rack">
+                        <div class="rack-rail-left"></div>
+                        <div class="rack-rail-right"></div>
+                        
+                        <!-- Unit 1: Internet Core Router BGP -->
+                        <div class="hardware-unit" id="unit-bgp" onclick="event.stopPropagation(); focusObject('unit_bgp')">
+                            <div class="unit-name">
+                                <span>Core Router (BGP)</span>
+                                <span>1U</span>
+                            </div>
+                            <div class="ports-bank">
+                                <div class="hardware-port active" id="bgp-port-1"></div>
+                                <div class="hardware-port active" id="bgp-port-2"></div>
+                                <div class="hardware-port"></div>
+                                <div class="hardware-port"></div>
+                                <div class="hardware-port optical active" id="bgp-fiber-out"></div>
+                            </div>
+                        </div>
+
+                        <!-- Unit 2: Metro Ethernet Core Switch -->
+                        <div class="hardware-unit" id="unit-switch" onclick="event.stopPropagation(); focusObject('unit_switch')">
+                            <div class="unit-name">
+                                <span>Core Switch L3</span>
+                                <span>1U</span>
+                            </div>
+                            <div class="ports-bank">
+                                <div class="hardware-port optical active" id="sw-fiber-in"></div>
+                                <div class="hardware-port active"></div>
+                                <div class="hardware-port active"></div>
+                                <div class="hardware-port active"></div>
+                                <div class="hardware-port optical active" id="sw-fiber-out"></div>
+                            </div>
+                        </div>
+
+                        <!-- Unit 3: OLT GPON -->
+                        <div class="hardware-unit" id="unit-olt" onclick="event.stopPropagation(); focusObject('unit_olt')">
+                            <div class="unit-name">
+                                <span>OLT GPON Huawei</span>
+                                <span>2U</span>
+                            </div>
+                            <div class="ports-bank" style="grid-template-columns: repeat(6, 1fr);">
+                                <div class="hardware-port optical active" id="olt-uplink"></div>
+                                <div class="hardware-port optical active" id="olt-pon-1"></div>
+                                <div class="hardware-port optical active" id="olt-pon-2"></div>
+                                <div class="hardware-port optical"></div>
+                                <div class="hardware-port optical"></div>
+                            </div>
+                        </div>
+
+                        <!-- Unit 4: DIO (Optical Distribution Frame) -->
+                        <div class="dio-unit" id="unit-dio" onclick="event.stopPropagation(); focusObject('unit_dio')">
+                            <div class="unit-name" style="margin-bottom: 4px;">
+                                <span>DIO Patch Panel</span>
+                                <span>1U</span>
+                            </div>
+                            <div class="dio-ports">
+                                <div class="dio-adapter" id="dio-port-1"></div>
+                                <div class="dio-adapter" id="dio-port-2"></div>
+                                <div class="dio-adapter"></div>
+                                <div class="dio-adapter"></div>
+                                <div class="dio-adapter"></div>
+                                <div class="dio-adapter"></div>
+                                <div class="dio-adapter"></div>
+                                <div class="dio-adapter"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Screen Diagnostics -->
+                    <div class="bgp-screen">
+                        <div class="screen-header">
+                            <span>MUNDONET BGP TRAFFIC STATUS</span>
+                            <span class="house-db-box" style="padding: 2px 6px; font-size: 0.65rem;">ONLINE</span>
+                        </div>
+                        <div class="screen-graph">
+                            <svg class="graph-line-svg">
+                                <path d="M 0,80 Q 50,20 100,50 T 200,30 T 300,70 T 400,20 L 500,100 L 0,100 Z" fill="rgba(6, 182, 212, 0.1)" stroke="var(--accent)" stroke-width="2" id="bgp-screen-graph-path"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAGE 2: INFRAESTRUTURA DE RUA -->
+            <div class="stage-section" onclick="focusObject('street_poles')">
+                <div class="stage-title"><i class="fa-solid fa-city text-purple"></i> 2. Infraestrutura Externa (Postes & Distribuidores Aéreos)</div>
+                
+                <div class="street-scenery">
+                    <!-- Pole 1: CEO -->
+                    <div class="street-pole" id="pole-1" onclick="event.stopPropagation(); focusObject('pole_1_ceo')">
+                        <div class="pole-cross"><div class="insulator"></div><div class="insulator"></div></div>
+                        <div class="pole-shaft"></div>
+                        <div class="detailed-ceo-box" id="ceo-box-anchor">
+                            <span style="font-size: 0.52rem; font-weight: 800;">CEO</span>
+                            <i class="fa-solid fa-code-merge" style="font-size: 0.75rem; margin-top: 2px;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Pole 2: CTO -->
+                    <div class="street-pole" id="pole-2" onclick="event.stopPropagation(); focusObject('pole_2_cto')">
+                        <div class="pole-cross"><div class="insulator"></div><div class="insulator"></div></div>
+                        <div class="pole-shaft"></div>
+                        
+                        <!-- Open Splitter Panel Detail -->
+                        <div class="detailed-cto-panel" id="cto-panel-anchor">
+                            <div class="cto-header">CTO-SPLIT</div>
+                            <div class="cto-ports-grid">
+                                <div class="cto-port active" id="cto-port-1"></div>
+                                <div class="cto-port active" id="cto-port-2"></div>
+                                <div class="cto-port active" id="cto-port-3"></div>
+                                <div class="cto-port"></div>
+                                <div class="cto-port"></div>
+                                <div class="cto-port"></div>
+                                <div class="cto-port"></div>
+                                <div class="cto-port"></div>
+                            </div>
+                        </div>
+
+                        <!-- Technical Team Ladder -->
+                        <div class="ladder-technician" id="ladder-tech" style="display: none;">
+                            <div class="ladder-wood"></div>
+                            <i class="fa-solid fa-user-gear tech-character"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAGE 3: RESIDÊNCIAS -->
+            <div class="stage-section" onclick="focusObject('residences_group')">
+                <div class="stage-title"><i class="fa-solid fa-house-laptop text-cyan"></i> 3. Última Milha & Residências dos Assinantes</div>
+                
+                <div class="residential-stage">
+                    <!-- Casa A: Gamer Profile -->
+                    <div class="house-hardware-card" id="card-house-a" onclick="event.stopPropagation(); focusObject('house_a')">
+                        <div class="house-title-bar">
+                            <div class="house-tag"><i class="fa-solid fa-gamepad" style="color: var(--primary);"></i> Casa A: Gamer</div>
+                            <div class="house-db-box" id="db-house-a">-18.2 dBm</div>
+                        </div>
+                        <div class="interior-devices-row">
+                            <!-- Detailed ONU -->
+                            <div class="physical-onu-box" id="onu-house-a">
+                                <div class="onu-title">ONU RECEIVER</div>
+                                <div class="onu-leds-line">
+                                    <div class="onu-led-dot active-green"></div> <!-- Power -->
+                                    <div class="onu-led-dot active-green" id="pon-led-a"></div> <!-- PON -->
+                                    <div class="onu-led-dot" id="los-led-a"></div> <!-- LOS -->
+                                </div>
+                                <div class="onu-ports-bottom">
+                                    <div class="onu-fiber-port" id="onu-fiber-a"></div>
+                                </div>
+                            </div>
+
+                            <!-- Physical Router -->
+                            <div class="physical-router-box">
+                                <div class="router-antenna ant-1"></div>
+                                <div class="router-antenna ant-2"></div>
+                                <div class="onu-title" style="color: #94a3b8;">ROUTER AX</div>
+                                <div class="router-leds">
+                                    <div class="router-led-dot"></div>
+                                    <div class="router-led-dot"></div>
+                                </div>
+                                <div class="router-ports-back">
+                                    <div class="router-rj45-port active" id="router-utp-a"></div>
+                                    <div class="router-rj45-port"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-icon-list">
+                            <div class="device-icon-item active" id="gamer-console"><i class="fa-solid fa-gamepad"></i> Console Gamer (Cabo UTP)</div>
+                            <div class="device-icon-item active"><i class="fa-solid fa-tv"></i> Smart TV 4K</div>
+                        </div>
+                    </div>
+
+                    <!-- Casa B: Home Office Profile -->
+                    <div class="house-hardware-card" id="card-house-b" onclick="event.stopPropagation(); focusObject('house_b')">
+                        <div class="house-title-bar">
+                            <div class="house-tag"><i class="fa-solid fa-laptop-house" style="color: var(--accent);"></i> Casa B: Office</div>
+                            <div class="house-db-box" id="db-house-b">-21.5 dBm</div>
+                        </div>
+                        <div class="interior-devices-row">
+                            <!-- ONU -->
+                            <div class="physical-onu-box" id="onu-house-b">
+                                <div class="onu-title">ONU RECEIVER</div>
+                                <div class="onu-leds-line">
+                                    <div class="onu-led-dot active-green"></div>
+                                    <div class="onu-led-dot active-green" id="pon-led-b"></div>
+                                    <div class="onu-led-dot" id="los-led-b"></div>
+                                </div>
+                                <div class="onu-ports-bottom">
+                                    <div class="onu-fiber-port" id="onu-fiber-b"></div>
+                                </div>
+                            </div>
+
+                            <!-- Router -->
+                            <div class="physical-router-box">
+                                <div class="router-antenna ant-1"></div>
+                                <div class="router-antenna ant-2"></div>
+                                <div class="onu-title" style="color: #94a3b8;">ROUTER DUAL</div>
+                                <div class="router-leds">
+                                    <div class="router-led-dot"></div>
+                                    <div class="router-led-dot"></div>
+                                </div>
+                                <div class="router-ports-back">
+                                    <div class="router-rj45-port active" id="router-utp-b"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-icon-list">
+                            <div class="device-icon-item active"><i class="fa-solid fa-laptop"></i> Notebook (Wi-Fi 5G)</div>
+                            <div class="device-icon-item active"><i class="fa-solid fa-video"></i> Câmera Fina</div>
+                        </div>
+                    </div>
+
+                    <!-- Casa C: Standard Profile -->
+                    <div class="house-hardware-card" id="card-house-c" onclick="event.stopPropagation(); focusObject('house_c')">
+                        <div class="house-title-bar">
+                            <div class="house-tag"><i class="fa-solid fa-house-user" style="color: var(--warning);"></i> Casa C: Comum</div>
+                            <div class="house-db-box" id="db-house-c">-24.0 dBm</div>
+                        </div>
+                        <div class="interior-devices-row">
+                            <!-- ONU -->
+                            <div class="physical-onu-box" id="onu-house-c">
+                                <div class="onu-title">ONU RECEIVER</div>
+                                <div class="onu-leds-line">
+                                    <div class="onu-led-dot active-green"></div>
+                                    <div class="onu-led-dot active-green" id="pon-led-c"></div>
+                                    <div class="onu-led-dot" id="los-led-c"></div>
+                                </div>
+                                <div class="onu-ports-bottom">
+                                    <div class="onu-fiber-port" id="onu-fiber-c"></div>
+                                </div>
+                            </div>
+
+                            <!-- Router -->
+                            <div class="physical-router-box">
+                                <div class="router-antenna ant-1"></div>
+                                <div class="router-antenna ant-2"></div>
+                                <div class="onu-title" style="color: #94a3b8;">ROUTER 2.4G</div>
+                                <div class="router-leds">
+                                    <div class="router-led-dot"></div>
+                                    <div class="router-led-dot"></div>
+                                </div>
+                                <div class="router-ports-back">
+                                    <div class="router-rj45-port active" id="router-utp-c"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="device-icon-list">
+                            <div class="device-icon-item active"><i class="fa-solid fa-mobile-screen"></i> Smartphone (Wi-Fi)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Sidebar Focal Lens Panel -->
+        <div class="lens-panel">
+            <div class="lens-title">
+                <i class="fa-solid fa-microscope"></i>
+                <h2>Lente de Diagnóstico</h2>
+            </div>
+
+            <!-- Dynamic Focus Detail Screen -->
+            <div class="focus-screen" id="lens-card">
+                <div style="border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:10px;">
+                    <span id="focus-subtitle">Infraestrutura FTTH</span>
+                    <h3 id="focus-title" style="margin-top: 2px;">Clique nos elementos</h3>
+                </div>
+
+                <div class="focus-parameters" id="focus-stats">
+                    <div class="param-cell">
+                        <span>Potência Fibra</span>
+                        <strong>--</strong>
+                    </div>
+                    <div class="param-cell">
+                        <span>Portas Ativas</span>
+                        <strong>--</strong>
+                    </div>
+                </div>
+
+                <p class="focus-explanation" id="focus-desc">
+                    Selecione qualquer elemento na maquete física (BGP, Switch, OLT, DIO, Caixa de Emenda, CTO, ou as casas dos clientes) para aproximar nossa lente didática e visualizar conexões, portas e dicas de triagem técnicas de nível 1.
+                </p>
+
+                <div class="tip-banner" id="focus-tip">
+                    <strong>💡 Orientação Geral</strong>
+                    Use os botões abaixo para simular problemas reais de infraestrutura de rua e atenuações de drop e veja em tempo real o reflexo lúdico nas fibras.
+                </div>
+            </div>
+
+            <!-- Simulation Controls Card -->
+            <div class="incident-card">
+                <h4>Simulações de Rede N1</h4>
+                
+                <button class="btn-scenario" id="scen-backbone-break" onclick="toggleScenario('backbone-break')">
+                    <span>1. Rompimento de Fibra Alimentadora (CEO)</span>
+                    <i class="fa-solid fa-bolt"></i>
+                </button>
+                
+                <button class="btn-scenario" id="scen-noc-outage" onclick="toggleScenario('noc-outage')">
+                    <span>2. Queda de Energia no NOC Provedor</span>
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+                
+                <button class="btn-scenario" id="scen-drop-c-cut" onclick="toggleScenario('drop-c-cut')">
+                    <span>3. Cabo Drop Rompido (Casa C)</span>
+                    <i class="fa-solid fa-scissors"></i>
+                </button>
+
+                <button class="btn-scenario" id="scen-drop-b-bend" onclick="toggleScenario('drop-b-bend')">
+                    <span>4. Atenuação por Curvatura (Casa B)</span>
+                    <i class="fa-solid fa-circle-radiation"></i>
+                </button>
+
+                <button class="btn-scenario" id="scen-tech-climb" onclick="toggleScenario('tech-climb')">
+                    <span>5. Enviar Técnico à Caixa CTO</span>
+                    <i class="fa-solid fa-helmet-safety"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // focal lens database
+        const database = {
+            'noc_central': {
+                title: "Central de Operações (Datacenter)",
+                subtitle: "Infraestrutura Provedor",
+                stats: [
+                    { key: "Tipo do Link", val: "BGP Ativo" },
+                    { key: "Backbone Core", val: "100G Metro" }
+                ],
+                desc: "A central operacional do provedor MundoNet. Nela, o sinal de internet global entra via roteador de borda BGP, é distribuído aos switches de agregação, injetado de forma óptica pelas OLTs GPON e encaminhado aos blocos organizadores DIO antes de pegar os cabos aéreos externos nos postes da rua.",
+                tipTitle: "Instrução Didática",
+                tipDesc: "Diferente da CTO na rua, o rack da central consome muita energia, exige climatização forçada de precisão em 18°C e no-breaks industriais.",
+                tipDanger: false
+            },
+            'unit_bgp': {
+                title: "Roteador de Borda BGP",
+                subtitle: "Hardware Rack Central",
+                stats: [
+                    { key: "Uptime do Link", val: "99.999%" },
+                    { key: "Porta Óptica Out", val: "SFP+ 10Gbps" }
+                ],
+                desc: "O roteador BGP Core (Border Gateway Protocol) é o responsável por ligar a rede da MundoNet ao resto da internet mundial. É ele que gerencia os IPs públicos de trânsito de dados globais e garante rotas estáveis e de menor latência.",
+                tipTitle: "Analogia",
+                tipDesc: "Pense no BGP como o posto de controle de fronteira de um país. Todo tráfego internacional passa e é inspecionado por ele.",
+                tipDanger: false
+            },
+            'unit_switch': {
+                title: "Core Switch Metro Ethernet",
+                subtitle: "Hardware Rack Central",
+                stats: [
+                    { key: "Tipo do Switch", val: "Layer 3 Core" },
+                    { key: "Capacidade Backbone", val: "480 Gbps Switching" }
+                ],
+                desc: "O Core Switch de Metro-Ethernet funciona como o agregador interno da central. Ele recebe o tráfego negociado pelo BGP e o distribui internamente para as placas de atendimento ópticas de todas as OLTs.",
+                tipTitle: "Orientação N1",
+                tipDesc: "O tráfego de dados corre via cabo de fibra óptica amarela (patch cord) conectando o BGP ao switch, e o switch à OLT.",
+                tipDanger: false
+            },
+            'unit_olt': {
+                title: "OLT GPON Huawei",
+                subtitle: "Hardware Rack Central",
+                stats: [
+                    { key: "Portas PON", val: "16 Portas (Ativas)" },
+                    { key: "Tecnologia Óptica", val: "GPON Classe C+" }
+                ],
+                desc: "A OLT (Optical Line Terminal) é a emissora laser do provedor. É ela quem gera a luz óptica invisível que alimenta as fibras na rua. Cada porta PON da OLT envia o sinal de internet de forma multiplexada no tempo para até 64 ou 128 ONUs de clientes.",
+                tipTitle: "Conceito Prático",
+                tipDesc: "A OLT é quem de fato gerencia a velocidade contratada pelo cliente e autoriza/desconecta logins via comandos de provisionamento.",
+                tipDanger: false
+            },
+            'unit_dio': {
+                title: "DIO (Distribuidor Óptico Interno)",
+                subtitle: "Organizador de Cabos Rack",
+                stats: [
+                    { key: "Capacidade DIO", val: "24 Adaptadores SC" },
+                    { key: "Tipo Adaptador", val: "SC-APC (Verde)" }
+                ],
+                desc: "O DIO funciona como um patch panel óptico de organização. Ele serve para fazer a transição segura dos delicados patch cords amarelos das OLTs para os cabos alimentadores pretos de rua, protegendo as fusões internas de fibra contra trações e poeiras.",
+                tipTitle: "Alerta de Manuseio",
+                tipDesc: "NUNCA olhe diretamente para uma porta do DIO ativa. A luz laser invisível infravermelha pode queimar a retina do olho imediatamente.",
+                tipDanger: false
+            },
+            'pole_1_ceo': {
+                title: "Caixa de Emenda CEO",
+                subtitle: "Infraestrutura de Poste 1",
+                stats: [
+                    { key: "Capacidade CEO", val: "Até 96 Fusões" },
+                    { key: "Proteção Interna", val: "IP68 Estanque" }
+                ],
+                desc: "A Caixa de Emenda Óptica (CEO) é o ponto do poste onde os cabos troncos alimentadores de fibra são emendados. Como os cabos de fábrica têm comprimento limitado (2 a 4 km), a CEO serve para unir carretéis derretendo o núcleo das fibras por fusão.",
+                tipTitle: "Ponto de Atenção",
+                tipDesc: "A Caixa de Emenda serve apenas para emendas contínuas de cabos externos; ela não realiza divisão óptica ou derivações para clientes finais.",
+                tipDanger: false
+            },
+            'pole_2_cto': {
+                title: "Caixa CTO (Pole 2)",
+                subtitle: "Distribuição Poste da Rua",
+                stats: [
+                    { key: "Splitter Interno", val: "1x8 ou 1x16 Passivo" },
+                    { key: "Perda Inserção split", val: "-14 dBm média" }
+                ],
+                desc: "A Caixa CTO (Caixa de Terminação Óptica) abriga o Splitter óptico (divisor de luz passivo). Ele divide a luz principal vinda da central em 16 portas rápidas para derivar cabos drop para as residências dos assinantes sem precisar de nenhuma energia elétrica na rua.",
+                tipTitle: "Conexão Direta",
+                tipDesc: "É aqui que o instalador pluga o cabo drop do cliente nas portas SC-APC (verde). A CTO é o elemento mais exposto a danos mecânicos na rua.",
+                tipDanger: false
+            },
+            'house_a': {
+                title: "Casa A: Perfil Gamer Room",
+                subtitle: "Residência Assinante",
+                stats: [
+                    { key: "Potência ONU (RX)", val: "-18.2 dBm" },
+                    { key: "Conexão Interna", val: "Console via UTP" }
+                ],
+                desc: "Esta casa possui um perfil de consumo exigente de jogos online competitivos. O cabo drop óptico entra diretamente na ONU, que converte a luz em sinal elétrico. O roteador Wi-Fi 6 AX se conecta via cabo de rede diretamente ao videogame, eliminando interferências aéreas.",
+                tipTitle: "Recomendação N1",
+                tipDesc: "Para clientes gamers reclamando de Ping alto, priorize sempre a conexão via cabo de rede RJ45 para eliminar o lag inerente ao Wi-Fi.",
+                tipDanger: false
+            },
+            'house_b': {
+                title: "Casa B: Perfil Home Office",
+                subtitle: "Residência Assinante",
+                stats: [
+                    { key: "Potência ONU (RX)", val: "-21.5 dBm" },
+                    { key: "Frequência Wi-Fi", val: "5 GHz Ativo" }
+                ],
+                desc: "Nesta residência, os clientes utilizam a internet para videoconferências corporativas em regime home office. O sinal de fibra chega perfeitamente na ONU e o roteador Dual-Band está propagando o sinal 5GHz para garantir velocidade máxima no notebook.",
+                tipTitle: "Diferença do 5G",
+                tipDesc: "A rede Wi-Fi 5GHz garante altas taxas de velocidade, mas tem pouco alcance. Oriente a trabalhar no mesmo cômodo do roteador.",
+                tipDanger: false
+            },
+            'house_c': {
+                title: "Casa C: Perfil Residencial",
+                subtitle: "Residência Assinante",
+                stats: [
+                    { key: "Potência ONU (RX)", val: "-24.0 dBm" },
+                    { key: "LED PON ONU", val: "PON Verde Fixo" }
+                ],
+                desc: "Uma residência com perfil de consumo padrão para navegação na web, redes sociais e streaming de vídeo FHD. O sinal óptico recebido na ONU está estável em -24 dBm e o roteador Wi-Fi atende a celulares e TVs.",
+                tipTitle: "Status Perfeito",
+                tipDesc: "Faixas de luz entre -15dBm e -25dBm indicam potência ideal. Acima de -28dBm começam a ocorrer perdas de pacotes.",
+                tipDanger: false
+            }
+        };
+
+        // Simulated scenarios status
+        const scenarios = {
+            'backbone-break': false,
+            'noc-outage': false,
+            'drop-c-cut': false,
+            'drop-b-bend': false,
+            'tech-climb': false
+        };
+
+        let isFlowActive = true;
+        let activeFocusObject = null;
+
+        // Toggle flow lines
+        function toggleFlows() {
+            isFlowActive = !isFlowActive;
+            const btn = document.getElementById('flow-toggle');
+            if (isFlowActive) {
+                btn.innerHTML = '<i class="fa-solid fa-circle-nodes"></i> Pacotes de Dados: Ativos';
+                btn.className = "btn-control active";
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-circle-pause"></i> Pacotes de Dados: Pausados';
+                btn.className = "btn-control";
+            }
+            drawNetworkCables();
+        }
+
+        // Toggle scenario buttons
+        function toggleScenario(id) {
+            scenarios[id] = !scenarios[id];
+            const btn = document.getElementById(`scen-${id}`);
+            if (scenarios[id]) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+            evaluateScenarios();
+        }
+
+        // Reset all active states
+        function resetAll() {
+            for (let key in scenarios) {
+                scenarios[key] = false;
+                const btn = document.getElementById(`scen-${key}`);
+                if (btn) btn.classList.remove('active');
+            }
+            evaluateScenarios();
+        }
+
+        // Focus object dynamic sidebar view
+        function focusObject(id) {
+            activeFocusObject = id;
+            const data = database[id];
+            if (!data) return;
+
+            const card = document.getElementById('lens-card');
+            
+            // Trigger reflow for card entry animation
+            card.style.animation = 'none';
+            card.offsetHeight;
+            card.style.animation = 'lens-in 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+
+            document.getElementById('focus-subtitle').textContent = data.subtitle;
+            document.getElementById('focus-title').textContent = data.title;
+            document.getElementById('focus-desc').textContent = data.desc;
+
+            const statsBox = document.getElementById('focus-stats');
+            statsBox.innerHTML = '';
+            data.stats.forEach(st => {
+                statsBox.innerHTML += `
+                    <div class="param-cell">
+                        <span>${st.key}</span>
+                        <strong>${st.val}</strong>
+                    </div>
+                `;
+            });
+
+            const tipBox = document.getElementById('focus-tip');
+            tipBox.className = data.tipDanger ? "tip-banner danger" : "tip-banner";
+            tipBox.innerHTML = `<strong>💡 ${data.tipTitle}</strong>${data.tipDesc}`;
+        }
+
+        // Draw network connections dynamically using precise target bounding rectangles!
+        function drawNetworkCables() {
+            const svg = document.getElementById('cables-layer');
+            svg.innerHTML = ''; // Clear previous paths
+
+            // Helper to get center coordinates of any DOM element relative to the absolute SVG layer
+            function getElementCoords(id) {
+                const el = document.getElementById(id);
+                if (!el) return { x: 0, y: 0 };
+                const rect = el.getBoundingClientRect();
+                const svgRect = svg.getBoundingClientRect();
+                return {
+                    x: (rect.left + rect.width / 2) - svgRect.left,
+                    y: (rect.top + rect.height / 2) - svgRect.top
+                };
+            }
+
+            // Central Racks interior fibers drawing
+            const bgpPort = getElementCoords('bgp-fiber-out');
+            const swPortIn = getElementCoords('sw-fiber-in');
+            const swPortOut = getElementCoords('sw-fiber-out');
+            const oltUplink = getElementCoords('olt-uplink');
+            const oltPon = getElementCoords('olt-pon-1');
+            const dioPortIn = getElementCoords('dio-port-1');
+            
+            // CEO & CTO anchors coordinates
+            const ceoBox = getElementCoords('ceo-box-anchor');
+            const ctoBox = getElementCoords('cto-panel-anchor');
+
+            // CTO individual splitter ports
+            const ctoPort1 = getElementCoords('cto-port-1');
+            const ctoPort2 = getElementCoords('cto-port-2');
+            const ctoPort3 = getElementCoords('cto-port-3');
+
+            // ONU residential optical input ports coordinates
+            const onuA = getElementCoords('onu-fiber-a');
+            const onuB = getElementCoords('onu-fiber-b');
+            const onuC = getElementCoords('onu-fiber-c');
+
+            // Router residential active RJ45 port coordinates
+            const onuLanA = getElementCoords('onu-house-a');
+            const routerUtpA = getElementCoords('router-utp-a');
+
+            // Condition state flags
+            const isNocDown = scenarios['noc-outage'];
+            const isBackboneCut = scenarios['backbone-break'];
+            const isDropCCut = scenarios['drop-c-cut'];
+            const isDropBBend = scenarios['drop-b-bend'];
+
+            // 1. Draw central fibers patch cords (glowing paths if flows are active)
+            const fiberFlowClass = (isFlowActive && !isNocDown) ? "flowing-wire-path yellow" : "cables-static yellow";
+            svg.innerHTML += `<path d="M ${bgpPort.x},${bgpPort.y} Q ${(bgpPort.x + swPortIn.x)/2},${(bgpPort.y + swPortIn.y)/2 - 10} ${swPortIn.x},${swPortIn.y}" class="${fiberFlowClass}" stroke="var(--yellow-fiber)" stroke-width="2" fill="none"></path>`;
+            svg.innerHTML += `<path d="M ${swPortOut.x},${swPortOut.y} Q ${(swPortOut.x + oltUplink.x)/2},${(swPortOut.y + oltUplink.y)/2 - 10} ${oltUplink.x},${oltUplink.y}" class="${fiberFlowClass}" stroke="var(--yellow-fiber)" stroke-width="2" fill="none"></path>`;
+            
+            const ponFlowClass = (isFlowActive && !isNocDown) ? "flowing-wire-path green" : "cables-static green";
+            svg.innerHTML += `<path d="M ${oltPon.x},${oltPon.y} Q ${(oltPon.x + dioPortIn.x)/2},${(oltPon.y + dioPortIn.y)/2 + 15} ${dioPortIn.x},${dioPortIn.y}" class="${ponFlowClass}" stroke="var(--green-fiber)" stroke-width="2" fill="none"></path>`;
+
+            // 2. Draw thick feeder Backbone Cable from DIO to CEO, then CEO to CTO
+            const backboneFlowClass = (isFlowActive && !isNocDown && !isBackboneCut) ? "flowing-wire-path" : "cables-static";
+            const backboneStroke = isBackboneCut ? "var(--danger)" : "var(--accent)";
+            const backboneClassFinal = isBackboneCut ? "flowing-wire-path danger" : backboneFlowClass;
+            
+            // Central DIO out to Pole 1 CEO
+            svg.innerHTML += `<path d="M ${dioPortIn.x},${dioPortIn.y} C ${dioPortIn.x + 100},${dioPortIn.y + 50} ${ceoBox.x - 100},${ceoBox.y - 50} ${ceoBox.x},${ceoBox.y}" class="${backboneClassFinal}" stroke="${backboneStroke}" stroke-width="3" fill="none"></path>`;
+            // Pole 1 CEO out to Pole 2 CTO
+            svg.innerHTML += `<path d="M ${ceoBox.x},${ceoBox.y} Q ${(ceoBox.x + ctoBox.x)/2},${(ceoBox.y + ctoBox.y)/2 - 15} ${ctoBox.x},${ctoBox.y}" class="${backboneClassFinal}" stroke="${backboneStroke}" stroke-width="3" fill="none"></path>`;
+
+            // 3. Draw thin Drop Cables from CTO individual ports to the client ONUs
+            // Drop House A
+            const dropAFlow = (isFlowActive && !isNocDown && !isBackboneCut) ? "flowing-wire-path drop" : "cables-static";
+            svg.innerHTML += `<path d="M ${ctoPort1.x},${ctoPort1.y} C ${ctoPort1.x - 120},${ctoPort1.y + 60} ${onuA.x - 20},${onuA.y + 40} ${onuA.x},${onuA.y}" class="${dropAFlow}" stroke="var(--accent)" stroke-width="2" fill="none"></path>`;
+
+            // Drop House B (Warning state if attenuated)
+            let dropBFlow = (isFlowActive && !isNocDown && !isBackboneCut) ? "flowing-wire-path drop" : "cables-static";
+            let dropBStroke = "var(--accent)";
+            if (isDropBBend) {
+                dropBStroke = "var(--warning)";
+                dropBFlow = "flowing-wire-path drop yellow";
+            }
+            svg.innerHTML += `<path d="M ${ctoPort2.x},${ctoPort2.y} C ${ctoPort2.x - 60},${ctoPort2.y + 60} ${onuB.x},${onuB.y + 40} ${onuB.x},${onuB.y}" class="${dropBFlow}" stroke="${dropBStroke}" stroke-width="2" fill="none"></path>`;
+
+            // Drop House C (Broken/Cut state if active)
+            let dropCFlow = (isFlowActive && !isNocDown && !isBackboneCut && !isDropCCut) ? "flowing-wire-path drop" : "cables-static";
+            let dropCStroke = "var(--accent)";
+            if (isDropCCut) {
+                dropCStroke = "var(--danger)";
+                dropCFlow = "flowing-wire-path danger";
+            }
+            svg.innerHTML += `<path d="M ${ctoPort3.x},${ctoPort3.y} C ${ctoPort3.x + 60},${ctoPort3.y + 60} ${onuC.x},${onuC.y + 40} ${onuC.x},${onuC.y}" class="${dropCFlow}" stroke="${dropCStroke}" stroke-width="2" fill="none"></path>`;
+
+            // 4. Draw detailed residential internal connection wires (ONU Lan to Router WAN)
+            const rj45AClass = (isFlowActive && !isNocDown && !isBackboneCut) ? "flowing-wire-path drop yellow" : "cables-static";
+            svg.innerHTML += `<path d="M ${onuLanA.x + 30},${onuLanA.y} Q ${(onuLanA.x + routerUtpA.x)/2},${(onuLanA.y + routerUtpA.y)/2 + 10} ${routerUtpA.x},${routerUtpA.y}" class="${rj45AClass}" stroke="var(--warning)" stroke-width="1.8" fill="none"></path>`;
+
+            const onuLanB = getElementCoords('onu-house-b');
+            const routerUtpB = getElementCoords('router-utp-b');
+            const rj45BClass = (isFlowActive && !isNocDown && !isBackboneCut) ? "flowing-wire-path drop yellow" : "cables-static";
+            svg.innerHTML += `<path d="M ${onuLanB.x + 30},${onuLanB.y} Q ${(onuLanB.x + routerUtpB.x)/2},${(onuLanB.y + routerUtpB.y)/2 + 10} ${routerUtpB.x},${routerUtpB.y}" class="${rj45BClass}" stroke="var(--warning)" stroke-width="1.8" fill="none"></path>`;
+
+            const onuLanC = getElementCoords('onu-house-c');
+            const routerUtpC = getElementCoords('router-utp-c');
+            const rj45CClass = (isFlowActive && !isNocDown && !isBackboneCut && !isDropCCut) ? "flowing-wire-path drop yellow" : "cables-static";
+            svg.innerHTML += `<path d="M ${onuLanC.x + 30},${onuLanC.y} Q ${(onuLanC.x + routerUtpC.x)/2},${(onuLanC.y + routerUtpC.y)/2 + 10} ${routerUtpC.x},${routerUtpC.y}" class="${rj45CClass}" stroke="var(--warning)" stroke-width="1.8" fill="none"></path>`;
+        }
+
+        // Central orchestration of simulated scenarios and parameters updates
+        function evaluateScenarios() {
+            const isNocDown = scenarios['noc-outage'];
+            const isBackboneCut = scenarios['backbone-break'];
+            const isDropCCut = scenarios['drop-c-cut'];
+            const isDropBBend = scenarios['drop-b-bend'];
+            const isTechClimbing = scenarios['tech-climb'];
+
+            // 1. NOC Power Outage Scenario
+            if (isNocDown) {
+                // Change NOC status hardware lights to dark/red
+                document.getElementById('bgp-port-1').className = "hardware-port danger-led";
+                document.getElementById('bgp-port-2').className = "hardware-port danger-led";
+                document.getElementById('bgp-fiber-out').className = "hardware-port optical";
+                document.getElementById('sw-fiber-in').className = "hardware-port optical";
+                document.getElementById('sw-fiber-out').className = "hardware-port optical";
+                document.getElementById('olt-uplink').className = "hardware-port optical";
+                document.getElementById('olt-pon-1').className = "hardware-port optical";
+                document.getElementById('olt-pon-2').className = "hardware-port optical";
+                
+                // Set BGP monitor screen graph to flat line
+                document.getElementById('bgp-screen-graph-path').setAttribute('d', 'M 0,95 L 500,95 L 500,100 L 0,100 Z');
+                
+                // All houses off-line
+                setHouseOffline('house_a');
+                setHouseOffline('house_b');
+                setHouseOffline('house_c');
+
+                // Update Database stats
+                database['unit_olt'].stats[0].val = "0 Portas (SEM ENERGIA)";
+                database['unit_olt'].desc = "A OLT está completamente desligada devido à queda de energia no rack do provedor. Todas as portas PON pararam de emitir luz laser, derrubando todos os assinantes da rede FTTH.";
+            } else {
+                // Restore NOC elements
+                document.getElementById('bgp-port-1').className = "hardware-port active";
+                document.getElementById('bgp-port-2').className = "hardware-port active";
+                document.getElementById('bgp-fiber-out').className = "hardware-port optical active";
+                document.getElementById('sw-fiber-in').className = "hardware-port optical active";
+                document.getElementById('sw-fiber-out').className = "hardware-port optical active";
+                document.getElementById('olt-uplink').className = "hardware-port optical active";
+                document.getElementById('olt-pon-1').className = "hardware-port optical active";
+                document.getElementById('olt-pon-2').className = "hardware-port optical active";
+
+                document.getElementById('bgp-screen-graph-path').setAttribute('d', 'M 0,80 Q 50,20 100,50 T 200,30 T 300,70 T 400,20 L 500,100 L 0,100 Z');
+
+                restoreHouse('house_a');
+                restoreHouse('house_b');
+                restoreHouse('house_c');
+
+                database['unit_olt'].stats[0].val = "16 Portas (Ativas)";
+                database['unit_olt'].desc = "A OLT (Optical Line Terminal) é a emissora laser do provedor. É ela quem gera a luz óptica invisível que alimenta as fibras na rua. Cada porta PON da OLT envia o sinal de internet de forma multiplexada no tempo para até 64 ou 128 ONUs de clientes.";
+            }
+
+            // 2. Backbone cable cut scenario
+            if (isBackboneCut) {
+                if (!isNocDown) {
+                    setHouseOffline('house_a');
+                    setHouseOffline('house_b');
+                    setHouseOffline('house_c');
+                }
+                database['pole_1_ceo'].stats[1].val = "ALERTA: CABO ROMPIDO";
+                database['pole_1_ceo'].desc = "Ocorreu um rompimento catastrófico no cabo de Backbone principal que vai da central para a rua. A luz do laser parou de chegar às CTOs, deixando todas as residências da vizinhança sem sinal óptico.";
+                database['pole_1_ceo'].tipTitle = "Manutenção URGENTE";
+                database['pole_1_ceo'].tipDesc = "Este incidente exige o envio imediato de um técnico de fusão de campo com máquina de emenda óptica e um refletômetro OTDR para localizar o ponto exato do rompimento.";
+                database['pole_1_ceo'].tipDanger = true;
+            } else {
+                database['pole_1_ceo'].stats[1].val = "IP68 Estanque";
+                database['pole_1_ceo'].desc = "A Caixa de Emenda Óptica (CEO) é o ponto do poste onde os cabos troncos alimentadores de fibra são emendados. Como os cabos de fábrica têm comprimento limitado (2 a 4 km), a CEO serve para unir carretéis derretendo o núcleo das fibras por fusão.";
+                database['pole_1_ceo'].tipTitle = "Ponto de Atenção";
+                database['pole_1_ceo'].tipDesc = "A Caixa de Emenda serve apenas para emendas contínuas de cabos externos; ela não realiza divisão óptica ou derivações para clientes finais.";
+                database['pole_1_ceo'].tipDanger = false;
+            }
+
+            // 3. Drop C Cut Scenario
+            if (isDropCCut) {
+                if (!isNocDown && !isBackboneCut) {
+                    setHouseOffline('house_c');
+                    // Change ONU LEDs status to LOS Danger
+                    document.getElementById('pon-led-c').className = "onu-led-dot";
+                    document.getElementById('los-led-c').className = "onu-led-dot active-red";
+
+                    database['house_c'].stats[0].val = "Sem Luz (-99 dBm)";
+                    database['house_c'].stats[1].val = "LOS VERMELHO ATIVO";
+                    database['house_c'].desc = "ALERTA N1: O cabo drop individual que conecta a Casa C à CTO do poste foi quebrado ou esticado além do limite físico. O terminal receptor da ONU acionou o LED vermelho LOS (Loss of Signal), indicando ausência total de sinal luminoso.";
+                    database['house_c'].tipTitle = "Ação de Suporte N1";
+                    database['house_c'].tipDesc = "Agende a visita técnica residencial para substituição de cabo drop. O conector SC-APC na CTO ou na roseta interna pode estar quebrado.";
+                    database['house_c'].tipDanger = true;
+                }
+            } else {
+                if (!isNocDown && !isBackboneCut) {
+                    restoreHouse('house_c');
+                    document.getElementById('pon-led-c').className = "onu-led-dot active-green";
+                    document.getElementById('los-led-c').className = "onu-led-dot";
+
+                    database['house_c'].stats[0].val = "-24.0 dBm";
+                    database['house_c'].stats[1].val = "PON Verde Fixo";
+                    database['house_c'].desc = "Uma residência com perfil de consumo padrão para navegação na web, redes sociais e streaming de vídeo FHD. O sinal óptico recebido na ONU está estável em -24 dBm e o roteador Wi-Fi atende a celulares e TVs.";
+                    database['house_c'].tipTitle = "Status Perfeito";
+                    database['house_c'].tipDesc = "Faixas de luz entre -15dBm e -25dBm indicam potência ideal. Acima de -28dBm começam a ocorrer perdas de pacotes.";
+                    database['house_c'].tipDanger = false;
+                }
+            }
+
+            // 4. Fiber Drop B bend attenuation scenario
+            if (isDropBBend) {
+                if (!isNocDown && !isBackboneCut) {
+                    const cardB = document.getElementById('card-house-b');
+                    cardB.className = "house-hardware-card warning-state";
+                    
+                    document.getElementById('db-house-b').textContent = "-31.5 dBm";
+                    document.getElementById('pon-led-b').className = "onu-led-dot active-green blink";
+                    document.getElementById('los-led-b').className = "onu-led-dot active-red";
+
+                    database['house_b'].stats[0].val = "-31.5 dBm (Atenuado)";
+                    database['house_b'].stats[1].val = "⚠️ PON OSCILANDO / LOS";
+                    database['house_b'].desc = "ATENÇÃO TÉCNICA: A fibra interna na casa do cliente sofreu uma curvatura extrema (dobrada atrás do móvel ou enrolada excessivamente). A luz do laser 'vaza' do vidro interno, atenuando a potência de recepção para perigosos -31.5 dBm, causando lentidão extrema.";
+                    database['house_b'].tipTitle = "Dica Didática";
+                    database['house_b'].tipDesc = "Explique para o cliente que a fibra óptica transmite luz por reflexão total interna. Se dobrar muito o cabo drop interno, a luz escapa e a internet cai ou oscila constantemente.";
+                    database['house_b'].tipDanger = true;
+                }
+            } else {
+                if (!isNocDown && !isBackboneCut) {
+                    const cardB = document.getElementById('card-house-b');
+                    cardB.className = "house-hardware-card";
+                    
+                    document.getElementById('db-house-b').textContent = "-21.5 dBm";
+                    document.getElementById('pon-led-b').className = "onu-led-dot active-green";
+                    document.getElementById('los-led-b').className = "onu-led-dot";
+
+                    database['house_b'].stats[0].val = "-21.5 dBm";
+                    database['house_b'].stats[1].val = "5 GHz Ativo";
+                    database['house_b'].desc = "Nesta residência, os clientes utilizam a internet para videoconferências corporativas em regime home office. O sinal de fibra chega perfeitamente na ONU e o roteador Dual-Band está propagando o sinal 5GHz para garantir velocidade máxima no notebook.";
+                    database['house_b'].tipTitle = "Diferença do 5G";
+                    database['house_b'].tipDesc = "A rede Wi-Fi 5GHz garante altas taxas de velocidade, mas tem pouco alcance. Oriente a trabalhar no mesmo cômodo do roteador.";
+                    database['house_b'].tipDanger = false;
+                }
+            }
+
+            // 5. Tech Climb Scenario
+            const ladder = document.getElementById('ladder-tech');
+            if (isTechClimbing) {
+                ladder.style.display = "flex";
+                database['pole_2_cto'].stats[0].val = "Manutenção em Andamento";
+                database['pole_2_cto'].desc = "A CTO-SPLIT está com as travas abertas. Um técnico de instalações da MundoNet está usando a escada para conectar um novo drop de assinante ou limpando as portas com álcool isopropílico para retirar impurezas.";
+            } else {
+                ladder.style.display = "none";
+                database['pole_2_cto'].stats[0].val = "Splitter 1x16 Passivo";
+                database['pole_2_cto'].desc = "A Caixa CTO (Caixa de Terminação Óptica) abriga o Splitter óptico (divisor de luz passivo). Ele divide a luz principal vinda da central em 16 portas rápidas para derivar cabos drop para as residências dos assinantes sem precisar de nenhuma energia elétrica na rua.";
+            }
+
+            // Refresh focus element if active
+            if (activeFocusObject) {
+                focusObject(activeFocusObject);
+            }
+
+            // Redraw precise connections paths coordinates
+            drawNetworkCables();
+        }
+
+        // Sub helper: set house to offline state
+        function setHouseOffline(houseId) {
+            const hId = houseId.substring(6); // get 'a', 'b', or 'c'
+            
+            const card = document.getElementById(`card-house-${hId}`);
+            card.className = "house-hardware-card danger-state";
+            
+            document.getElementById(`db-house-${hId}`).textContent = "OFFLINE";
+            
+            document.getElementById(`pon-led-${hId}`).className = "onu-led-dot";
+            document.getElementById(`los-led-${hId}`).className = "onu-led-dot active-red";
+
+            // Update database values
+            database[`house_${hId}`].stats[0].val = "Sem Sinal (Sem Luz)";
+            database[`house_${hId}`].stats[1].val = "🔴 OFFLINE / LOS ATIVO";
+        }
+
+        // Sub helper: restore house to online state
+        function restoreHouse(houseId) {
+            const hId = houseId.substring(6);
+            
+            const card = document.getElementById(`card-house-${hId}`);
+            card.className = "house-hardware-card";
+
+            const defaultDbs = { 'a': "-18.2 dBm", 'b': "-21.5 dBm", 'c': "-24.0 dBm" };
+            document.getElementById(`db-house-${hId}`).textContent = defaultDbs[hId];
+
+            document.getElementById(`pon-led-${hId}`).className = "onu-led-dot active-green";
+            document.getElementById(`los-led-${hId}`).className = "onu-led-dot";
+        }
+
+        // Initial setup and redraw on resize to keep lines absolute pixel-perfect
+        window.addEventListener('load', () => {
+            evaluateScenarios();
+            focusObject('unit_olt'); // Default focus OLT
+        });
+        window.addEventListener('resize', drawNetworkCables);
+    </script>
+</body>
+</html>
