@@ -354,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const val = parseInt(optSlider.value);
             optPower.textContent = `${val} dBm`;
 
-            if (val >= -25 && val <= -15) {
+            if (val >= -25) {
                 optPower.className = "text-success";
                 optStatus.textContent = "PON (Excelente)";
                 optStatus.className = "text-success font-bold";
