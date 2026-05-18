@@ -998,7 +998,7 @@
                         <!-- Unit 1: Internet Core Router BGP -->
                         <div class="hardware-unit" id="unit-bgp" onclick="event.stopPropagation(); focusObject('unit_bgp')">
                             <div class="unit-name">
-                                <span>Core Router (BGP)</span>
+                                <span>Roteador de Borda (BGP)</span>
                                 <span>1U</span>
                             </div>
                             <div class="ports-bank">
@@ -1013,7 +1013,7 @@
                         <!-- Unit 2: Metro Ethernet Core Switch -->
                         <div class="hardware-unit" id="unit-switch" onclick="event.stopPropagation(); focusObject('unit_switch')">
                             <div class="unit-name">
-                                <span>Core Switch L3</span>
+                                <span>Switch Core L3</span>
                                 <span>1U</span>
                             </div>
                             <div class="ports-bank">
@@ -1043,7 +1043,7 @@
                         <!-- Unit 4: DIO (Optical Distribution Frame) -->
                         <div class="dio-unit" id="unit-dio" onclick="event.stopPropagation(); focusObject('unit_dio')">
                             <div class="unit-name" style="margin-bottom: 4px;">
-                                <span>DIO Patch Panel</span>
+                                <span>DIO (Distribuidor Óptico)</span>
                                 <span>1U</span>
                             </div>
                             <div class="dio-ports">
@@ -1062,7 +1062,7 @@
                     <!-- Live Screen Diagnostics -->
                     <div class="bgp-screen">
                         <div class="screen-header">
-                            <span>MUNDONET BGP TRAFFIC STATUS</span>
+                            <span>STATUS DE TRÁFEGO BGP MUNDONET</span>
                             <span class="house-db-box" style="padding: 2px 6px; font-size: 0.65rem;">ONLINE</span>
                         </div>
                         <div class="screen-graph">
@@ -1096,7 +1096,7 @@
                         
                         <!-- Open Splitter Panel Detail -->
                         <div class="detailed-cto-panel" id="cto-panel-anchor">
-                            <div class="cto-header">CTO-SPLIT</div>
+                            <div class="cto-header">CTO - ATENDIMENTO</div>
                             <div class="cto-ports-grid">
                                 <div class="cto-port active" id="cto-port-1"></div>
                                 <div class="cto-port active" id="cto-port-2"></div>
@@ -1132,7 +1132,7 @@
                         <div class="interior-devices-row">
                             <!-- Detailed ONU -->
                             <div class="physical-onu-box" id="onu-house-a">
-                                <div class="onu-title">ONU RECEIVER</div>
+                                <div class="onu-title">ONU RECEPTORA</div>
                                 <div class="onu-leds-line">
                                     <div class="onu-led-dot active-green"></div> <!-- Power -->
                                     <div class="onu-led-dot active-green" id="pon-led-a"></div> <!-- PON -->
@@ -1147,7 +1147,7 @@
                             <div class="physical-router-box">
                                 <div class="router-antenna ant-1"></div>
                                 <div class="router-antenna ant-2"></div>
-                                <div class="onu-title" style="color: #94a3b8;">ROUTER AX</div>
+                                <div class="onu-title" style="color: #94a3b8;">ROTEADOR AX</div>
                                 <div class="router-leds">
                                     <div class="router-led-dot"></div>
                                     <div class="router-led-dot"></div>
@@ -1167,13 +1167,13 @@
                     <!-- Casa B: Home Office Profile -->
                     <div class="house-hardware-card" id="card-house-b" onclick="event.stopPropagation(); focusObject('house_b')">
                         <div class="house-title-bar">
-                            <div class="house-tag"><i class="fa-solid fa-laptop-house" style="color: var(--accent);"></i> Casa B: Office</div>
+                            <div class="house-tag"><i class="fa-solid fa-laptop-house" style="color: var(--accent);"></i> Casa B: Home Office</div>
                             <div class="house-db-box" id="db-house-b">-21.5 dBm</div>
                         </div>
                         <div class="interior-devices-row">
                             <!-- ONU -->
                             <div class="physical-onu-box" id="onu-house-b">
-                                <div class="onu-title">ONU RECEIVER</div>
+                                <div class="onu-title">ONU RECEPTORA</div>
                                 <div class="onu-leds-line">
                                     <div class="onu-led-dot active-green"></div>
                                     <div class="onu-led-dot active-green" id="pon-led-b"></div>
@@ -1188,7 +1188,7 @@
                             <div class="physical-router-box">
                                 <div class="router-antenna ant-1"></div>
                                 <div class="router-antenna ant-2"></div>
-                                <div class="onu-title" style="color: #94a3b8;">ROUTER DUAL</div>
+                                <div class="onu-title" style="color: #94a3b8;">ROTEADOR DUAL</div>
                                 <div class="router-leds">
                                     <div class="router-led-dot"></div>
                                     <div class="router-led-dot"></div>
@@ -1200,20 +1200,20 @@
                         </div>
                         <div class="device-icon-list">
                             <div class="device-icon-item active"><i class="fa-solid fa-laptop"></i> Notebook (Wi-Fi 5G)</div>
-                            <div class="device-icon-item active"><i class="fa-solid fa-video"></i> Câmera Fina</div>
+                            <div class="device-icon-item active"><i class="fa-solid fa-video"></i> Câmera Wi-Fi</div>
                         </div>
                     </div>
 
                     <!-- Casa C: Standard Profile -->
                     <div class="house-hardware-card" id="card-house-c" onclick="event.stopPropagation(); focusObject('house_c')">
                         <div class="house-title-bar">
-                            <div class="house-tag"><i class="fa-solid fa-house-user" style="color: var(--warning);"></i> Casa C: Comum</div>
+                            <div class="house-tag"><i class="fa-solid fa-house-user" style="color: var(--warning);"></i> Casa C: Residencial</div>
                             <div class="house-db-box" id="db-house-c">-24.0 dBm</div>
                         </div>
                         <div class="interior-devices-row">
                             <!-- ONU -->
                             <div class="physical-onu-box" id="onu-house-c">
-                                <div class="onu-title">ONU RECEIVER</div>
+                                <div class="onu-title">ONU RECEPTORA</div>
                                 <div class="onu-leds-line">
                                     <div class="onu-led-dot active-green"></div>
                                     <div class="onu-led-dot active-green" id="pon-led-c"></div>
@@ -1228,7 +1228,7 @@
                             <div class="physical-router-box">
                                 <div class="router-antenna ant-1"></div>
                                 <div class="router-antenna ant-2"></div>
-                                <div class="onu-title" style="color: #94a3b8;">ROUTER 2.4G</div>
+                                <div class="onu-title" style="color: #94a3b8;">ROTEADOR 2.4G</div>
                                 <div class="router-leds">
                                     <div class="router-led-dot"></div>
                                     <div class="router-led-dot"></div>
