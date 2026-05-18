@@ -944,6 +944,222 @@
             stroke-dasharray: 4 4 !important;
         }
 
+
+        /* 🎥 HIGH-CONTRAST PROJECTOR MODE (LIGHT THEME) OVERRIDES */
+        body.projector-mode {
+            --bg-main: #f8fafc; /* Slate 50 - extremely bright off-white */
+            --bg-card: #ffffff; /* solid pure white */
+            --bg-glass: #f1f5f9; /* Slate 100 */
+            
+            --primary: #1d4ed8; /* bolder royal blue */
+            --accent: #0369a1; /* bold sky blue */
+            --purple: #7e22ce; /* bold purple */
+            --success: #047857; /* dark emerald green */
+            --warning: #b45309; /* dark amber/orange */
+            --danger: #b91c1c; /* bold red */
+            
+            --text-main: #0f172a; /* Slate 900 - extremely crisp near-black */
+            --text-muted: #334155; /* Slate 700 - very readable dark grey */
+            --border: #cbd5e1; /* Slate 300 - clear borders instead of transparent */
+            --yellow-fiber: #c2410c; /* orange-red/dark-amber - so yellow fiber is visible on white background! */
+            --green-fiber: #15803d; /* bold green */
+            --black-drop: #0f172a; /* dark drops */
+            
+            background-image: 
+                radial-gradient(rgba(15, 23, 42, 0.1) 1.5px, transparent 1.5px),
+                radial-gradient(at 0% 0%, rgba(29, 78, 216, 0.05) 0px, transparent 40%),
+                radial-gradient(at 100% 100%, rgba(126, 34, 206, 0.05) 0px, transparent 40%);
+        }
+
+        body.projector-mode .physical-rack {
+            background: #e2e8f0;
+            border: 3px solid #64748b;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        body.projector-mode .hardware-unit,
+        body.projector-mode .dio-unit {
+            background: #ffffff;
+            border: 2px solid #475569;
+        }
+
+        body.projector-mode .unit-name span {
+            color: #0f172a !important;
+            font-weight: 800 !important;
+        }
+
+        body.projector-mode .pole-shaft {
+            background: #475569;
+            width: 8px;
+        }
+
+        body.projector-mode .pole-cross {
+            background: #334155;
+            height: 8px;
+        }
+
+        body.projector-mode .street-section {
+            background: #e2e8f0;
+            border: 2px solid #cbd5e1;
+        }
+
+        body.projector-mode .detailed-cto-panel {
+            background: #ffffff;
+            border: 3px solid #2563eb;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        body.projector-mode .cto-header {
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 800;
+        }
+
+        body.projector-mode .cto-port {
+            background: #cbd5e1;
+            border: 2px solid #64748b;
+        }
+
+        body.projector-mode .cto-port.active {
+            background: #10b981;
+            box-shadow: 0 0 6px #10b981;
+        }
+
+        body.projector-mode .house-hardware-card {
+            background: #ffffff;
+            border: 2.5px solid #94a3b8;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        body.projector-mode .house-hardware-card.active-card {
+            border-color: #2563eb;
+            box-shadow: 0 0 15px rgba(37, 99, 235, 0.2);
+        }
+
+        body.projector-mode .house-tag {
+            color: #0f172a !important;
+            font-weight: 800;
+        }
+
+        body.projector-mode .house-db-box {
+            background: #0f172a;
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        body.projector-mode .physical-onu-box,
+        body.projector-mode .physical-router-box {
+            background: #f1f5f9;
+            border: 2px solid #475569;
+        }
+
+        body.projector-mode .onu-title {
+            color: #0f172a !important;
+            font-weight: 700;
+        }
+
+        body.projector-mode header {
+            background: #ffffff;
+            border-bottom: 2px solid #cbd5e1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        body.projector-mode .header-left h1 {
+            color: #0f172a;
+        }
+
+        body.projector-mode .btn-control {
+            background: #e2e8f0;
+            color: #0f172a;
+            border: 1.5px solid #cbd5e1;
+        }
+
+        body.projector-mode .btn-control:hover {
+            background: #cbd5e1;
+        }
+
+        body.projector-mode .btn-control.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #1d4ed8;
+        }
+
+        body.projector-mode .control-sidebar {
+            background: #ffffff;
+            border-left: 2px solid #cbd5e1;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.02);
+        }
+
+        body.projector-mode .control-sidebar h2 {
+            color: #0f172a;
+        }
+
+        body.projector-mode .info-value-box {
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+        }
+
+        body.projector-mode .info-label {
+            color: #334155;
+            font-weight: 700;
+        }
+
+        body.projector-mode .info-text {
+            color: #0f172a;
+        }
+
+        body.projector-mode .tip-banner {
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+            color: #1e3a8a;
+        }
+
+        body.projector-mode .tip-banner.danger {
+            background: #fef2f2;
+            border-left: 5px solid #ef4444;
+            color: #7f1d1d;
+        }
+
+        body.projector-mode .scenario-btn {
+            background: #f1f5f9;
+            border: 1.5px solid #cbd5e1;
+            color: #334155;
+        }
+
+        body.projector-mode .scenario-btn:hover {
+            background: #e2e8f0;
+        }
+
+        body.projector-mode .scenario-btn.active-danger {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+
+        body.projector-mode .scenario-btn.active-warning {
+            background: #f59e0b;
+            color: #ffffff;
+            border-color: #f59e0b;
+        }
+
+        body.projector-mode .scenario-btn.active-success {
+            background: #10b981;
+            color: #ffffff;
+            border-color: #10b981;
+        }
+
+        body.projector-mode .flowing-wire-path {
+            stroke-width: 4.5 !important;
+        }
+
+        body.projector-mode .flowing-wire-path.drop {
+            stroke-width: 4.2 !important;
+        }
+
+        body.projector-mode .cables-static {
+            stroke-width: 4.5 !important;
+        }
+
         @keyframes flow-path-animation {
             to { stroke-dashoffset: -36; }
         }
@@ -961,6 +1177,9 @@
         </div>
         
         <div class="header-controls">
+            <button class="btn-control" id="projector-toggle" onclick="toggleProjectorMode()">
+                <i class="fa-solid fa-video"></i> Modo Projetor: Desativado
+            </button>
             <button class="btn-control active" id="flow-toggle" onclick="toggleFlows()">
                 <i class="fa-solid fa-circle-nodes"></i> Pacotes de Dados: Ativos
             </button>
@@ -1471,6 +1690,22 @@
                 btn.className = "btn-control";
             }
             drawNetworkCables();
+        }
+
+        // Toggle projector mode light/high-contrast theme
+        function toggleProjectorMode() {
+            const body = document.body;
+            body.classList.toggle('projector-mode');
+            const btn = document.getElementById('projector-toggle');
+            if (body.classList.contains('projector-mode')) {
+                btn.innerHTML = `<i class="fa-solid fa-video"></i> Modo Projetor: ATIVADO`;
+                btn.classList.add('active');
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-video"></i> Modo Projetor: Desativado`;
+                btn.classList.remove('active');
+            }
+            // Force redraw of SVG connection lines
+            setTimeout(drawNetworkCables, 50);
         }
 
         // Toggle scenario buttons
