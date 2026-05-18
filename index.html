@@ -273,8 +273,80 @@
                         <div class="card-body">
                             <div class="card-grid">
                                 <div class="card-visual">
-                                    <img src="images/didactic_osi.png" alt="Dispositivos em Rede">
-                                    <div class="visual-caption">Analogia da Conversação de Dados</div>
+                                    <!-- Interactive 7-Layer OSI Model Component -->
+                                    <div class="osi-container">
+                                        <h4 style="font-size:0.9rem; margin-bottom:12px; color:var(--accent); font-weight:700;"><i class="fa-solid fa-layer-group"></i> Modelo OSI Interativo (7 Camadas)</h4>
+                                        <div class="osi-stairs">
+                                            <!-- Layer 7 -->
+                                            <div class="osi-step layer-7 active" onclick="showOsiDetail(7)">
+                                                <span class="osi-num">7</span>
+                                                <div class="osi-info">
+                                                    <div class="osi-layer-title">7. Aplicação</div>
+                                                    <div class="osi-layer-subtitle">Sites (HTTP), DNS, E-mail, WhatsApp</div>
+                                                </div>
+                                                <i class="fa-solid fa-envelope osi-icon"></i>
+                                            </div>
+                                            <!-- Layer 6 -->
+                                            <div class="osi-step layer-6" onclick="showOsiDetail(6)">
+                                                <span class="osi-num">6</span>
+                                                <div class="osi-info">
+                                                    <div class="osi-layer-title">6. Apresentação</div>
+                                                    <div class="osi-layer-subtitle">Criptografia (SSL/TLS), JPEG, MP4, JSON</div>
+                                                </div>
+                                                <i class="fa-solid fa-lock osi-icon"></i>
+                                            </div>
+                                            <!-- Layer 5 -->
+                                            <div class="osi-step layer-5" onclick="showOsiDetail(5)">
+                                                <span class="osi-num">5</span>
+                                                <div class="osi-info">
+                                                    <div class="osi-layer-title">5. Sessão</div>
+                                                    <div class="osi-layer-subtitle">Gerenciamento e controle de conexões (Sockets)</div>
+                                                </div>
+                                                <i class="fa-solid fa-handshake osi-icon"></i>
+                                            </div>
+                                            <!-- Layer 4 -->
+                                            <div class="osi-step layer-4" onclick="showOsiDetail(4)">
+                                                <span class="osi-num">4</span>
+                                                <div class="osi-info">
+                                                    <div class="osi-layer-title">4. Transporte</div>
+                                                    <div class="osi-layer-subtitle">Garante a integridade do pacote (TCP, UDP)</div>
+                                                </div>
+                                                <i class="fa-solid fa-truck-ramp-box osi-icon"></i>
+                                            </div>
+                                            <!-- Layer 3 -->
+                                            <div class="osi-step layer-3" onclick="showOsiDetail(3)">
+                                                <span class="osi-num">3</span>
+                                                <div class="osi-info">
+                                                    <div class="osi-layer-title">3. Rede</div>
+                                                    <div class="osi-layer-subtitle">Endereçamento lógico global (IP, Roteador)</div>
+                                                </div>
+                                                <i class="fa-solid fa-map-location-dot osi-icon"></i>
+                                            </div>
+                                            <!-- Layer 2 -->
+                                            <div class="osi-step layer-2" onclick="showOsiDetail(2)">
+                                                <span class="osi-num">2</span>
+                                                <div class="osi-info">
+                                                    <div class="osi-layer-title">2. Enlace</div>
+                                                    <div class="osi-layer-subtitle">Endereço físico local (MAC, Switch)</div>
+                                                </div>
+                                                <i class="fa-solid fa-microchip osi-icon"></i>
+                                            </div>
+                                            <!-- Layer 1 -->
+                                            <div class="osi-step layer-1" onclick="showOsiDetail(1)">
+                                                <span class="osi-num">1</span>
+                                                <div class="osi-info">
+                                                    <div class="osi-layer-title">1. Física</div>
+                                                    <div class="osi-layer-subtitle">Meio material (Cabos, Fibra, Ondas de Wi-Fi)</div>
+                                                </div>
+                                                <i class="fa-solid fa-ethernet osi-icon"></i>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Detailed explanation card in Portuguese -->
+                                        <div class="osi-detail-box" id="osi-detail-box">
+                                            <div class="osi-detail-placeholder">💡 Clique em qualquer camada acima para ver a explicação didática em português!</div>
+                                        </div>
+                                    </div>
                                     
                                     <!-- Interactive Sim: Packet Emitter -->
                                     <div class="packet-simulator">

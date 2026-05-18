@@ -945,4 +945,97 @@ document.addEventListener('DOMContentLoaded', () => {
     window.printCertificate = () => {
         window.print();
     };
+
+    // --- MODULE 1: INTERACTIVE 7-LAYER OSI MODEL LOGIC ---
+    const osiDetails = {
+        1: {
+            title: "Camada 1: Física",
+            color: "var(--danger)",
+            desc: "É a parte de hardware puro. Trata de como converter dados binários (0s e 1s) em pulsos elétricos, de luz (laser) ou ondas eletromagnéticas para que viajem pelo espaço físico.",
+            hardware: "Cabos de Fibra Óptica, Cabo de Rede (UTP), Ondas de Wi-Fi, Conetor RJ45, Transceivers (MiniGBIC).",
+            analog: "A estrada de asfalto ou os trilhos onde o carro viaja física e materialmente."
+        },
+        2: {
+            title: "Camada 2: Enlace de Dados",
+            color: "rgba(249, 115, 22, 1)", // Orange
+            desc: "Organiza os bits em blocos chamados 'Quadros' (Frames) e adiciona o endereço físico de origem e destino (Endereço MAC). Garante que a comunicação de cabo a cabo ocorra sem colisões.",
+            hardware: "Switches L2, Placa de Rede (NIC), Endereço MAC, Protocolo Ethernet.",
+            analog: "O painel do carro ou a placa do carro que identifica o veículo localmente e garante que ele não colida com o carro ao lado."
+        },
+        3: {
+            title: "Camada 3: Rede",
+            color: "var(--warning)", // Yellow
+            desc: "Responsável pelo endereçamento lógico mundial. Cria os 'Pacotes' de dados e define qual o melhor caminho (rota) que eles devem fazer pela internet para ir do cliente até o servidor.",
+            hardware: "Roteador Core BGP, Endereço IP (IPv4 / IPv6), Gateway, Protocolo ICMP (Ping), Roteamento Dinâmico.",
+            analog: "O sistema GPS e o CEP/Endereço postal de destino que define qual rua ou estrada o carro deve pegar para ir de uma cidade a outra."
+        },
+        4: {
+            title: "Camada 4: Transporte",
+            color: "var(--success)", // Green
+            desc: "Pega os dados volumosos e quebra em pedaços organizados para envio. O TCP garante que nenhum pedaço se perca (se perder, pede reenvio). O UDP envia na velocidade máxima sem conferência (ideal para lives e jogos).",
+            hardware: "Protocolo TCP (Garante entrega confiável) e UDP (Rápido, sem garantia, ex: Games/Streaming).",
+            analog: "A transportadora ou os correios que organizam a carga, conferem se nada quebrou e garantem que tudo seja entregue de forma ordenada."
+        },
+        5: {
+            title: "Camada 5: Sessão",
+            color: "var(--accent)", // Cyan
+            desc: "Estabelece, gerencia e finaliza a conversa entre os dois aplicativos. Garante que se a conexão oscilar temporariamente, a conversa possa ser retomada de onde parou sem precisar reiniciar tudo.",
+            hardware: "Sockets de rede, sessões ativas de login (PPPoE/APIs), conexões SQL.",
+            analog: "A ligação telefônica em si: o ato de falar 'Alô', manter a linha aberta enquanto conversam e dizer 'Tchau' ao desligar."
+        },
+        6: {
+            title: "Camada 6: Apresentação",
+            color: "#6366f1", // Indigo
+            desc: "Garante que o receptor entenda o formato dos dados. Se o dado precisa de segurança, ela criptografa (ex: HTTPS). Se for muito pesado, ela comprime (ex: ZIP) para economizar banda.",
+            hardware: "Protocolo SSL/TLS (Criptografia HTTPS), Extensões JSON, JPG, MP4, Compressão ZIP.",
+            analog: "O tradutor de línguas ou o envelope lacrado que protege a carta para que apenas quem abrir possa lê-la."
+        },
+        7: {
+            title: "Camada 7: Aplicação",
+            color: "var(--purple)", // Purple
+            desc: "É o aplicativo final que você interage diretamente! O navegador Web conversa em HTTP, o e-mail em SMTP, os games em seus próprios protocolos de aplicação. É a camada do usuário final.",
+            hardware: "Google Chrome, WhatsApp, Instagram, Servidor HTTP, Cliente de E-mail (SMTP), DNS.",
+            analog: "Você escrevendo a mensagem no papel e interagindo diretamente com o produto final."
+        }
+    };
+
+    window.showOsiDetail = (layerNum) => {
+        const detail = osiDetails[layerNum];
+        if (!detail) return;
+        
+        // Remove active state from all steps
+        document.querySelectorAll('.osi-step').forEach(step => {
+            step.classList.remove('active');
+        });
+        
+        // Add active state to selected step
+        const activeStep = document.querySelector(`.osi-step.layer-${layerNum}`);
+        if (activeStep) activeStep.classList.add('active');
+        
+        const detailBox = document.getElementById('osi-detail-box');
+        if (!detailBox) return;
+        
+        detailBox.style.borderColor = detail.color;
+        detailBox.style.boxShadow = `0 8px 24px rgba(0, 0, 0, 0.3), 0 0 15px ${detail.color}25`;
+        
+        detailBox.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                <span class="osi-num-badge" style="background:${detail.color}">${layerNum}</span>
+                <h4 style="color:${detail.color}; font-size:1.15rem; font-weight:800; text-transform:uppercase; margin:0;">${detail.title}</h4>
+            </div>
+            <p style="font-size:0.88rem; line-height:1.5; color:#ffffff; font-weight:500; margin-bottom:12px;">${detail.desc}</p>
+            
+            <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.05); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:8px;">
+                <div style="font-size:0.8rem; line-height:1.4;"><strong style="color:var(--text-muted)">⚙️ EQUIPAMENTOS / PROTOCOLOS:</strong> <span style="color:#ffffff">${detail.hardware}</span></div>
+                <div style="font-size:0.8rem; line-height:1.4;"><strong style="color:var(--text-muted)">💡 ANALOGIA DIDÁTICA:</strong> <span style="color:#e2e8f0; font-style:italic;">"${detail.analog}"</span></div>
+            </div>
+        `;
+    };
+    
+    // Auto click Layer 7 on first load of Module 1 after a short delay
+    setTimeout(() => {
+        if (document.getElementById('osi-detail-box')) {
+            window.showOsiDetail(7);
+        }
+    }, 100);
 });
