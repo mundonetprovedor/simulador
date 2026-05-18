@@ -1163,6 +1163,17 @@
         @keyframes flow-path-animation {
             to { stroke-dashoffset: -36; }
         }
+
+        @keyframes lens-in {
+            from {
+                opacity: 0.3;
+                filter: brightness(0.85) contrast(0.9);
+            }
+            to {
+                opacity: 1;
+                filter: brightness(1) contrast(1);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1771,6 +1782,55 @@
             const tipBox = document.getElementById('focus-tip');
             tipBox.className = data.tipDanger ? "tip-banner danger" : "tip-banner";
             tipBox.innerHTML = `<strong>💡 ${data.tipTitle}</strong>${data.tipDesc}`;
+
+            // 🎯 Dynamic alignment with the clicked item
+            let clickedEl = null;
+            if (id === 'noc_central') {
+                clickedEl = document.querySelector('.stage-section');
+            } else if (id === 'unit_bgp') {
+                clickedEl = document.getElementById('unit-bgp');
+            } else if (id === 'unit_switch') {
+                clickedEl = document.getElementById('unit-switch');
+            } else if (id === 'unit_olt') {
+                clickedEl = document.getElementById('unit-olt');
+            } else if (id === 'unit_dio') {
+                clickedEl = document.getElementById('unit-dio');
+            } else if (id === 'pole_1_ceo') {
+                clickedEl = document.getElementById('pole-1');
+            } else if (id === 'pole_2_cto') {
+                clickedEl = document.getElementById('pole-2');
+            } else if (id === 'house_a') {
+                clickedEl = document.getElementById('card-house-a');
+            } else if (id === 'house_b') {
+                clickedEl = document.getElementById('card-house-b');
+            } else if (id === 'house_c') {
+                clickedEl = document.getElementById('card-house-c');
+            }
+
+            if (clickedEl) {
+                const clickedElRect = clickedEl.getBoundingClientRect();
+                const panel = document.querySelector('.lens-panel');
+                const panelRect = panel.getBoundingClientRect();
+                
+                // Get original offset top of the card relative to the lens-panel parent
+                const cardOriginalTop = card.offsetTop || 0;
+                const cardHeight = card.offsetHeight || 420;
+                
+                // Calculate target Y vertical translation to center the card next to the clicked item
+                let targetY = (clickedElRect.top + clickedElRect.height / 2) - panelRect.top - (cardHeight / 2) - cardOriginalTop;
+                
+                // Adjust for any scroll inside the lens-panel
+                targetY += panel.scrollTop;
+                
+                // Keep the card fully visible within the sidebar scroll bounds
+                const maxTranslate = Math.max(0, panel.scrollHeight - cardHeight - cardOriginalTop - 30);
+                const minTranslate = -cardOriginalTop + 10;
+                targetY = Math.max(minTranslate, Math.min(targetY, maxTranslate));
+                
+                // Set smooth transitions and translate the card vertically
+                card.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s';
+                card.style.transform = `translateY(${targetY}px)`;
+            }
         }
 
         // Draw network connections dynamically using precise target bounding rectangles!
