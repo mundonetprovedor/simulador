@@ -181,47 +181,89 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- MODULE 2: INTERNET PATH TRACER ---
-    const tracerSteps = document.querySelectorAll('.tracer-step');
-    const tracerTitle = document.getElementById('tracer-title');
-    const tracerDesc = document.getElementById('tracer-desc');
+    // --- MODULE 2: INTERNET PATH TRACER AND TRANSMISSION PIPELINE ---
+    window.selectPipelineStep = (stepNum) => {
+        const idx = stepNum - 1;
+        const tracerData = [
+            {
+                title: "1. O Cliente (O Pedido)",
+                desc: "Você está no seu celular e digita 'youtube.com'. O celular é o CLIENTE. Ele cria uma requisição (um pedido) perguntando ao site do YouTube pelo vídeo. Ele envia essa requisição pelo ar até o roteador Wi-Fi."
+            },
+            {
+                title: "2. O Provedor (A Rota Local)",
+                desc: "O Roteador da sua casa traduz o Wi-Fi e envia esse pacote de dados pela fibra óptica da sua rua até a central da MundoNet (nosso Provedor). Nós somos a primeira ponte que conecta você com o restante do planeta!"
+            },
+            {
+                title: "3. O Backbone (A Autoestrada da Internet)",
+                desc: "A MundoNet entrega o pacote para as gigantes telecomunicações chamadas Backbones (espinha dorsal). São cabos submarinos transoceânicos gigantescos e fibras de alta velocidade que conectam países e continentes. Os dados viajam na velocidade da luz por essas rotas!"
+            },
+            {
+                title: "4. O Servidor (A Entrega)",
+                desc: "O pacote chega no datacenter do Google/YouTube (o SERVIDOR). O servidor processa o pedido, localiza o vídeo solicitado, o empacota em milhares de pedacinhos e manda de volta pelo mesmo caminho. O ciclo se completa e o vídeo abre na sua tela!"
+            }
+        ];
 
-    const tracerData = [
-        {
-            title: "1. O Cliente (O Pedido)",
-            desc: "Você está no seu celular e digita 'youtube.com'. O celular é o CLIENTE. Ele cria uma requisição (um pedido) perguntando ao site do YouTube pelo vídeo. Ele envia essa requisição pelo ar até o roteador Wi-Fi."
-        },
-        {
-            title: "2. O Provedor (A Rota Local)",
-            desc: "O Roteador da sua casa traduz o Wi-Fi e envia esse pacote de dados pela fibra óptica da sua rua até a central da MundoNet (nosso Provedor). Nós somos a primeira ponte que conecta você com o restante do planeta!"
-        },
-        {
-            title: "3. O Backbone (A Autoestrada da Internet)",
-            desc: "A MundoNet entrega o pacote para as gigantes telecomunicações chamadas Backbones (espinha dorsal). São cabos transoceânicos submarinos gigantantes e fibras nacionais de alta velocidade que conectam países e continentes. Os dados voam na velocidade da luz por essas rotas."
-        },
-        {
-            title: "4. O Servidor (A Entrega)",
-            desc: "O pacote chega no datacenter do Google/YouTube (o SERVIDOR). O servidor processa o pedido, localiza o vídeo solicitado, o empacota em milhares de pedacinhos e manda de volta pelo mesmo caminho. O ciclo se completa e o vídeo abre na sua tela!"
-        }
-    ];
-
-    tracerSteps.forEach(step => {
-        step.addEventListener('click', () => {
-            const idx = parseInt(step.getAttribute('data-step')) - 1;
-            
-            // Set active states
-            tracerSteps.forEach((s, sIdx) => {
-                s.classList.remove('active');
-                if (sIdx <= idx) s.classList.add('completed');
-                else s.classList.remove('completed');
-            });
-            step.classList.add('active');
-
-            // Set Content
-            tracerTitle.textContent = tracerData[idx].title;
+        const tracerTitle = document.getElementById('tracer-title');
+        const tracerDesc = document.getElementById('tracer-desc');
+        if (tracerTitle && tracerDesc) {
+            tracerTitle.innerHTML = `<i class="fa-solid fa-circle-info" style="font-size:1.15rem;"></i> ${tracerData[idx].title}`;
             tracerDesc.textContent = tracerData[idx].desc;
-        });
+        }
+
+        // Highlight nodes
+        for (let i = 1; i <= 4; i++) {
+            const node = document.getElementById(`pipeline-node-${i}`);
+            const stepBtn = document.getElementById(`tracer-step-${i}`);
+            if (node) {
+                node.classList.remove('active', 'completed');
+                if (i < stepNum) {
+                    node.classList.add('completed');
+                } else if (i === stepNum) {
+                    node.classList.add('active');
+                }
+            }
+            if (stepBtn) {
+                stepBtn.classList.remove('active', 'completed');
+                if (i < stepNum) {
+                    stepBtn.classList.add('completed');
+                } else if (i === stepNum) {
+                    stepBtn.classList.add('active');
+                }
+            }
+        }
+
+        // Animate dynamic active cable width
+        const activeCable = document.getElementById('pipeline-cables-active');
+        if (activeCable) {
+            activeCable.style.width = (idx * 33.33) + '%';
+        }
+
+        // Centered responsive packet calculation
+        const packet = document.getElementById('pipeline-packet');
+        const targetNode = document.getElementById(`pipeline-node-${stepNum}`);
+        const network = document.querySelector('.pipeline-network');
+        if (packet && targetNode && network) {
+            const netRect = network.getBoundingClientRect();
+            const nodeRect = targetNode.getBoundingClientRect();
+            const leftOffset = nodeRect.left - netRect.left + (nodeRect.width / 2) - 7;
+            packet.style.left = leftOffset + 'px';
+        }
+    };
+
+    window.addEventListener('resize', () => {
+        const activeNode = document.querySelector('.pipeline-node.active');
+        if (activeNode) {
+            const stepNum = parseInt(activeNode.id.replace('pipeline-node-', ''));
+            window.selectPipelineStep(stepNum);
+        }
     });
+
+    // Auto initialize pipeline step 1
+    setTimeout(() => {
+        if (document.getElementById('pipeline-packet')) {
+            window.selectPipelineStep(1);
+        }
+    }, 150);
 
 
     // --- MODULE 3: DNS TRANSLATOR TOOL ---

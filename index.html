@@ -407,21 +407,52 @@
                         <div class="card-body">
                             <div class="card-grid">
                                 <div class="card-visual">
-                                    <img src="images/bottleneck.png" alt="Fluxo da Internet">
-                                    <div class="visual-caption">O Pipeline Cliente-Servidor</div>
-                                    
-                                    <!-- Interactive Sim: Path Tracer -->
-                                    <div class="path-tracer">
-                                        <h4 style="font-size:0.85rem; margin-bottom:12px; color:var(--primary)"><i class="fa-solid fa-route"></i> Rastreamento da Jornada de Dados</h4>
-                                        <div class="tracer-steps">
-                                            <div class="tracer-step active" data-step="1">1</div>
-                                            <div class="tracer-step" data-step="2">2</div>
-                                            <div class="tracer-step" data-step="3">3</div>
-                                            <div class="tracer-step" data-step="4">4</div>
+                                    <!-- Interactive Transmission Pipeline Simulator -->
+                                    <div class="pipeline-container">
+                                        <h4 style="font-size:0.9rem; color:var(--primary); font-weight:700; width:100%; margin-bottom:10px;"><i class="fa-solid fa-circle-nodes"></i> Pipeline de Transmissão (Caminho dos Dados)</h4>
+                                        
+                                        <div class="pipeline-network">
+                                            <div class="pipeline-cables"></div>
+                                            <div class="pipeline-cables-active" id="pipeline-cables-active"></div>
+                                            <div class="pipeline-packet" id="pipeline-packet"></div>
+                                            
+                                            <!-- Node 1: Cliente -->
+                                            <div class="pipeline-node active" id="pipeline-node-1" onclick="selectPipelineStep(1)">
+                                                <div class="pipeline-node-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                                                <div class="pipeline-node-label">Cliente</div>
+                                            </div>
+                                            
+                                            <!-- Node 2: Provedor -->
+                                            <div class="pipeline-node" id="pipeline-node-2" onclick="selectPipelineStep(2)">
+                                                <div class="pipeline-node-icon"><i class="fa-solid fa-tower-broadcast"></i></div>
+                                                <div class="pipeline-node-label">Provedor</div>
+                                            </div>
+                                            
+                                            <!-- Node 3: Backbone -->
+                                            <div class="pipeline-node" id="pipeline-node-3" onclick="selectPipelineStep(3)">
+                                                <div class="pipeline-node-icon"><i class="fa-solid fa-globe"></i></div>
+                                                <div class="pipeline-node-label">Backbone</div>
+                                            </div>
+                                            
+                                            <!-- Node 4: Servidor -->
+                                            <div class="pipeline-node" id="pipeline-node-4" onclick="selectPipelineStep(4)">
+                                                <div class="pipeline-node-icon"><i class="fa-solid fa-server"></i></div>
+                                                <div class="pipeline-node-label">Servidor</div>
+                                            </div>
                                         </div>
-                                        <div class="tracer-content-box">
-                                            <h4 id="tracer-title">1. O Cliente (O Pedido)</h4>
-                                            <p id="tracer-desc">Você está no seu celular e digita 'youtube.com'. O celular é o CLIENTE. Ele cria uma requisição (um pedido) perguntando ao site do YouTube pelo vídeo. Ele envia essa requisição pelo ar até o roteador Wi-Fi.</p>
+                                        
+                                        <!-- Step buttons to trace the path -->
+                                        <div class="tracer-steps" style="margin-top:15px; margin-bottom:10px; width:100%;">
+                                            <div class="tracer-step active" data-step="1" id="tracer-step-1" onclick="selectPipelineStep(1)">1</div>
+                                            <div class="tracer-step" data-step="2" id="tracer-step-2" onclick="selectPipelineStep(2)">2</div>
+                                            <div class="tracer-step" data-step="3" id="tracer-step-3" onclick="selectPipelineStep(3)">3</div>
+                                            <div class="tracer-step" data-step="4" id="tracer-step-4" onclick="selectPipelineStep(4)">4</div>
+                                        </div>
+                                        
+                                        <!-- Detailed explanation card below -->
+                                        <div class="tracer-content-box" style="width:100%; border: 1px dashed var(--border); border-radius: 12px; padding: 15px; background: rgba(0,0,0,0.3); min-height:140px; display:flex; flex-direction:column; justify-content:center;">
+                                            <h4 id="tracer-title" style="color:var(--primary); font-size:1.05rem; font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:8px;">1. O Cliente (O Pedido)</h4>
+                                            <p id="tracer-desc" style="font-size:0.85rem; line-height:1.5; color:var(--text-main); margin:0;">Você está no seu celular e digita 'youtube.com'. O celular é o CLIENTE. Ele cria uma requisição (um pedido) perguntando ao site do YouTube pelo vídeo. Ele envia essa requisição pelo ar até o roteador Wi-Fi.</p>
                                         </div>
                                     </div>
                                 </div>
