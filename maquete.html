@@ -1261,6 +1261,14 @@
                     <h3 id="focus-title" style="margin-top: 2px;">Clique nos elementos</h3>
                 </div>
 
+                <!-- Real equipment photo container -->
+                <div id="focus-image-container" style="display: none; position: relative; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); margin-top: 15px; margin-bottom: 5px; aspect-ratio: 16/9;">
+                    <img id="focus-image" src="" style="width: 100%; height: 100%; object-fit: cover;" />
+                    <div style="position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%); padding: 6px 12px; font-size: 0.55rem; font-weight: 800; color: var(--accent); letter-spacing: 0.05em; text-transform: uppercase; display: flex; align-items: center; gap: 4px;">
+                        <i class="fa-solid fa-camera"></i> Foto Real do Equipamento
+                    </div>
+                </div>
+
                 <div class="focus-parameters" id="focus-stats">
                     <div class="param-cell">
                         <span>Potência Fibra</span>
@@ -1321,6 +1329,7 @@
             'noc_central': {
                 title: "Central de Operações (Datacenter)",
                 subtitle: "Infraestrutura Provedor",
+                image: "images/bgp_router_real.png",
                 stats: [
                     { key: "Tipo do Link", val: "BGP Ativo" },
                     { key: "Backbone Core", val: "100G Metro" }
@@ -1333,6 +1342,7 @@
             'unit_bgp': {
                 title: "Roteador de Borda BGP",
                 subtitle: "Hardware Rack Central",
+                image: "images/bgp_router_real.png",
                 stats: [
                     { key: "Uptime do Link", val: "99.999%" },
                     { key: "Porta Óptica Out", val: "SFP+ 10Gbps" }
@@ -1345,6 +1355,7 @@
             'unit_switch': {
                 title: "Core Switch Metro Ethernet",
                 subtitle: "Hardware Rack Central",
+                image: "images/l3_switch_real.png",
                 stats: [
                     { key: "Tipo do Switch", val: "Layer 3 Core" },
                     { key: "Capacidade Backbone", val: "480 Gbps Switching" }
@@ -1357,6 +1368,7 @@
             'unit_olt': {
                 title: "OLT GPON Huawei",
                 subtitle: "Hardware Rack Central",
+                image: "images/olt_gpon_real.png",
                 stats: [
                     { key: "Portas PON", val: "16 Portas (Ativas)" },
                     { key: "Tecnologia Óptica", val: "GPON Classe C+" }
@@ -1369,18 +1381,20 @@
             'unit_dio': {
                 title: "DIO (Distribuidor Óptico Interno)",
                 subtitle: "Organizador de Cabos Rack",
+                image: "images/dio_panel_real.png",
                 stats: [
                     { key: "Capacidade DIO", val: "24 Adaptadores SC" },
                     { key: "Tipo Adaptador", val: "SC-APC (Verde)" }
                 ],
                 desc: "O DIO funciona como um patch panel óptico de organização. Ele serve para fazer a transição segura dos delicados patch cords amarelos das OLTs para os cabos alimentadores pretos de rua, protegendo as fusões internas de fibra contra trações e poeiras.",
                 tipTitle: "Alerta de Manuseio",
-                tipDesc: "NUNCA olhe diretamente para uma porta do DIO ativa. A luz laser invisível infravermelha pode queimar a retina do olho imediatamente.",
+                tipDesc: "NUNCA olhe diretamente para uma porta do DIO activa. A luz laser invisível infravermelha pode queimar a retina do olho imediatamente.",
                 tipDanger: false
             },
             'pole_1_ceo': {
                 title: "Caixa de Emenda CEO",
                 subtitle: "Infraestrutura de Poste 1",
+                image: "images/ceo_splice_real.png",
                 stats: [
                     { key: "Capacidade CEO", val: "Até 96 Fusões" },
                     { key: "Proteção Interna", val: "IP68 Estanque" }
@@ -1393,6 +1407,7 @@
             'pole_2_cto': {
                 title: "Caixa CTO (Pole 2)",
                 subtitle: "Distribuição Poste da Rua",
+                image: "images/cto_splitter_real.png",
                 stats: [
                     { key: "Splitter Interno", val: "1x8 ou 1x16 Passivo" },
                     { key: "Perda Inserção split", val: "-14 dBm média" }
@@ -1405,6 +1420,7 @@
             'house_a': {
                 title: "Casa A: Perfil Gamer Room",
                 subtitle: "Residência Assinante",
+                image: "images/onu_gpon_real.png",
                 stats: [
                     { key: "Potência ONU (RX)", val: "-18.2 dBm" },
                     { key: "Conexão Interna", val: "Console via UTP" }
@@ -1417,6 +1433,7 @@
             'house_b': {
                 title: "Casa B: Perfil Home Office",
                 subtitle: "Residência Assinante",
+                image: "images/onu_gpon_real.png",
                 stats: [
                     { key: "Potência ONU (RX)", val: "-21.5 dBm" },
                     { key: "Frequência Wi-Fi", val: "5 GHz Ativo" }
@@ -1429,6 +1446,7 @@
             'house_c': {
                 title: "Casa C: Perfil Residencial",
                 subtitle: "Residência Assinante",
+                image: "images/onu_gpon_real.png",
                 stats: [
                     { key: "Potência ONU (RX)", val: "-24.0 dBm" },
                     { key: "LED PON ONU", val: "PON Verde Fixo" }
@@ -1504,6 +1522,16 @@
             document.getElementById('focus-subtitle').textContent = data.subtitle;
             document.getElementById('focus-title').textContent = data.title;
             document.getElementById('focus-desc').textContent = data.desc;
+
+            // Handle equipment photo rendering if present in DB
+            const imgContainer = document.getElementById('focus-image-container');
+            const imgEl = document.getElementById('focus-image');
+            if (data.image) {
+                imgEl.src = data.image;
+                imgContainer.style.display = 'block';
+            } else {
+                imgContainer.style.display = 'none';
+            }
 
             const statsBox = document.getElementById('focus-stats');
             statsBox.innerHTML = '';
