@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treinamento N1 - Ferramentas de Rede</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* TEMA CLARO */
+            --bg-main: #f0f4f8;
+            --bg-panel: rgba(255, 255, 255, 0.95);
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --primary: #2563eb;
+            --accent: #0284c7;
+            --purple: #7c3aed;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --border: rgba(0, 0, 0, 0.1);
+            --strong-text: #0f172a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.1) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(2, 132, 199, 0.05) 0px, transparent 50%);
+            overflow: hidden;
+        }
+
+        /* Glowing Orbs - Subtle for light theme */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--primary);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 700px;
+            height: 700px;
+            background: var(--purple);
+            bottom: -200px;
+            right: -200px;
+        }
+
+        /* Fullscreen Toggle */
+        .fullscreen-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .fullscreen-btn:hover {
+            color: var(--strong-text);
+            background: rgba(0, 0, 0, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Slide Container */
+        .slideshow-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95);
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            padding: 20px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        /* Slide Inner Layouts */
+        .slide-content {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 60px 80px;
+            backdrop-filter: blur(15px);
+            width: 95vw;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0.9;
+        }
+
+        .slide-content.border-purple::before {
+            background: linear-gradient(90deg, var(--purple), #ec4899);
+        }
+
+        .slide-content.border-orange::before {
+            background: linear-gradient(90deg, var(--warning), var(--danger));
+        }
+
+        .slide-content.border-green::before {
+            background: linear-gradient(90deg, var(--success), var(--accent));
+        }
+
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: center;
+            height: 100%;
+        }
+
+        .slide-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide-image img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--border);
+            object-fit: contain;
+        }
+
+        .slide-header {
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        .slide-header i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 30px;
+            border-radius: 50%;
+        }
+
+        .slide-header h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--strong-text), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .slide-header h2 {
+            font-size: 2.2rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Lists inside Slides */
+        .concept-list {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+            font-size: 1.6rem;
+            line-height: 1.5;
+        }
+
+        .concept-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .concept-list li i {
+            font-size: 1.8rem;
+            margin-top: 8px;
+            width: 45px;
+            text-align: center;
+        }
+
+        .concept-list strong {
+            color: var(--strong-text);
+            font-weight: 800;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Specific Colors */
+        .color-primary {
+            color: var(--primary);
+        }
+
+        .color-purple {
+            color: var(--purple);
+        }
+
+        .color-warning {
+            color: var(--warning);
+        }
+
+        .color-success {
+            color: var(--success);
+        }
+
+        /* Navigation Controls */
+        .controls {
+            position: fixed;
+            bottom: 25px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+            z-index: 10;
+        }
+
+        .btn-nav {
+            background: #ffffff;
+            border: 2px solid var(--border);
+            color: var(--strong-text);
+            padding: 20px 40px;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-nav:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            background: #f1f5f9;
+            color: var(--text-muted);
+            border-color: var(--border);
+        }
+
+        .slide-dots {
+            display: flex;
+            gap: 15px;
+            background: #ffffff;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: var(--accent);
+            transform: scale(1.5);
+            box-shadow: 0 0 15px rgba(2, 132, 199, 0.4);
+        }
+
+        /* Table Slide Elements */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 1.6rem;
+        }
+
+        th,
+        td {
+            padding: 25px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        th {
+            color: var(--accent);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 1.4rem;
+        }
+
+        td {
+            color: var(--strong-text);
+        }
+
+        .val-normal {
+            color: var(--success);
+            font-weight: 800;
+        }
+
+        .val-alert {
+            color: var(--danger);
+            font-weight: 800;
+        }
+
+        .important-tip {
+            background: #fef2f2;
+            border-left: 8px solid var(--danger);
+            padding: 35px;
+            border-radius: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 30px;
+            margin-top: 50px;
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.1);
+        }
+
+        .important-tip i {
+            font-size: 3.5rem;
+            color: var(--danger);
+        }
+
+        .important-tip h4 {
+            color: var(--strong-text);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .important-tip p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        .highlight {
+            color: var(--danger);
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Fullscreen Toggle -->
+    <button class="fullscreen-btn" onclick="toggleFullScreen()" title="Tela Cheia (F11)">
+        <i class="fa-solid fa-expand"></i>
+    </button>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="slideshow-container">
+
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <div class="slide-content" style="text-align: center; justify-content: center; padding: 0 50px;">
+                <i class="fa-solid fa-satellite-dish color-primary"
+                    style="font-size: 10rem; margin-bottom: 40px; filter: drop-shadow(0 15px 25px rgba(37,99,235,0.2));"></i>
+                <h1
+                    style="font-size: 6.5rem; font-weight: 800; margin-bottom: 30px; background: linear-gradient(135deg, var(--strong-text), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    Ferramentas de Rede</h1>
+                <p
+                    style="font-size: 2.2rem; color: var(--text-muted); max-width: 1200px; margin: 0 auto; line-height: 1.5;">
+                    Entenda os testes básicos e identifique onde está o problema quando o cliente relatar lentidão ou
+                    quedas de internet.</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Ping -->
+        <div class="slide">
+            <div class="slide-content">
+                <div class="split-layout">
+                    <div class="split-text">
+                        <div class="slide-header">
+                            <i class="fa-solid fa-table-tennis-paddle-ball color-primary"></i>
+                            <h1>1. Ping</h1>
+                            <h2>O teste de "Você está aí?"</h2>
+                        </div>
+                        <ul class="concept-list">
+                            <li>
+                                <i class="fa-solid fa-book color-primary"></i>
+                                <div><strong>O que é:</strong> Como mandar um "Oi" para um computador e esperar a
+                                    resposta "Sim, estou aqui!".</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-lightbulb color-primary"></i>
+                                <div><strong>Analogia:</strong> Jogar uma bola na parede. O Ping diz se a bola bateu e
+                                    voltou ou passou direto.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-magnifying-glass-chart color-primary"></i>
+                                <div><strong>Interpretação:</strong> Se houve resposta, a conexão funciona. Se falhou
+                                    (Esgotado), o destino caiu ou o cabo quebrou.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-house-crack color-primary"></i>
+                                <div><strong>Sintoma:</strong> Falha total de internet ou site específico não abre.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="slide-image">
+                        <img src="ping.png" alt="Ilustração do funcionamento do Ping">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Latência -->
+        <div class="slide">
+            <div class="slide-content border-purple">
+                <div class="split-layout">
+                    <div class="split-text">
+                        <div class="slide-header">
+                            <i class="fa-solid fa-stopwatch color-purple"></i>
+                            <h1>2. Latência (ms)</h1>
+                            <h2 style="color: var(--purple);">O tempo de resposta</h2>
+                        </div>
+                        <ul class="concept-list">
+                            <li>
+                                <i class="fa-solid fa-book color-purple"></i>
+                                <div><strong>O que é:</strong> O tempo exato que a informação leva para ir do
+                                    dispositivo até o destino e voltar.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-lightbulb color-purple"></i>
+                                <div><strong>Analogia:</strong> O tempo de entrega de uma carta. Se o carteiro é rápido,
+                                    a latência é baixa (boa).</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-magnifying-glass-chart color-purple"></i>
+                                <div><strong>Interpretação:</strong> Quanto menor, mais rápido. Acima de 100ms a
+                                    navegação fica desconfortável.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-house-crack color-purple"></i>
+                                <div><strong>Sintoma:</strong> Jogos com "lag" (teleporte) e voz em chamadas chegando
+                                    com atraso.</div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="slide-image">
+                        <img src="latency.png" alt="Ilustração do funcionamento da Latência">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Perda de Pacotes -->
+        <div class="slide">
+            <div class="slide-content border-orange">
+                <div class="split-layout">
+                    <div class="split-text">
+                        <div class="slide-header">
+                            <i class="fa-solid fa-box-open color-warning"></i>
+                            <h1>3. Perda de Pacotes</h1>
+                            <h2 style="color: var(--warning);">Quando a carga cai no caminho</h2>
+                        </div>
+                        <ul class="concept-list">
+                            <li>
+                                <i class="fa-solid fa-book color-warning"></i>
+                                <div><strong>O que é:</strong> Ocorre quando os dados não chegam ao destino e precisam
+                                    ser retransmitidos do zero.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-lightbulb color-warning"></i>
+                                <div><strong>Analogia:</strong> Entregador de pizza que deixa cair fatias no caminho. O
+                                    pedido chega incompleto.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-magnifying-glass-chart color-warning"></i>
+                                <div><strong>Interpretação:</strong> O ideal é 0%. Acima de 1% já é sinal de falha
+                                    física, superaquecimento ou ruído de Wi-Fi.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-house-crack color-warning"></i>
+                                <div><strong>Sintoma:</strong> Voz "robótica" no WhatsApp, vídeos engasgando muito e
+                                    quedas de conexão.</div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="slide-image">
+                        <img src="packet_loss.png" alt="Ilustração do funcionamento da Perda de Pacotes">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Traceroute -->
+        <div class="slide">
+            <div class="slide-content border-green">
+                <div class="split-layout">
+                    <div class="split-text">
+                        <div class="slide-header">
+                            <i class="fa-solid fa-route color-success"></i>
+                            <h1>4. Traceroute</h1>
+                            <h2 style="color: var(--success);">O mapa do caminho</h2>
+                        </div>
+                        <ul class="concept-list">
+                            <li>
+                                <i class="fa-solid fa-book color-success"></i>
+                                <div><strong>O que é:</strong> Ferramenta que mostra a rota exata (equipamento por
+                                    equipamento) até o destino.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-lightbulb color-success"></i>
+                                <div><strong>Analogia:</strong> O rastreamento de pacote dos Correios, informando cada
+                                    cidade por onde a caixa passou.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-magnifying-glass-chart color-success"></i>
+                                <div><strong>Interpretação:</strong> Identifica exatamente em qual provedor ou cidade
+                                    ocorreu o "engarrafamento" da internet.</div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-house-crack color-success"></i>
+                                <div><strong>Sintoma:</strong> YouTube carrega normal, mas um jogo ou site específico
+                                    não abre ou fica muito lento.</div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="slide-image">
+                        <img src="traceroute.png" alt="Ilustração do funcionamento do Traceroute">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Resumo e Dica -->
+        <div class="slide">
+            <div class="slide-content" style="align-items: center; justify-content: center;">
+                <div style="max-width: 1400px; width: 100%;">
+                    <h1 style="font-size: 3.5rem; text-align: center; margin-bottom: 40px; color: var(--strong-text);">
+                        Tabela de Referência Rápida</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Métrica</th>
+                                <th>O que avalia?</th>
+                                <th>Valor Ideal</th>
+                                <th>Sinal de Alerta 🚨</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Ping</strong></td>
+                                <td>Conectividade Básica</td>
+                                <td><span class="val-normal">Resposta positiva (OK)</span></td>
+                                <td><span class="val-alert">"Esgotado o tempo limite"</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Latência</strong></td>
+                                <td>Velocidade / Atraso</td>
+                                <td><span class="val-normal">Até 30ms (Jogos) / 80ms</span></td>
+                                <td><span class="val-alert">Acima de 150ms ou oscilante</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Perda de Pacotes</strong></td>
+                                <td>Estabilidade do sinal</td>
+                                <td><span class="val-normal">0% (Nenhuma perda)</span></td>
+                                <td><span class="val-alert">Acima de 1%</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Traceroute</strong></td>
+                                <td>Qualidade da Rota</td>
+                                <td><span class="val-normal">Saltos rápidos (< 50ms)</span>
+                                </td>
+                                <td><span class="val-alert">Asteriscos (*) frequentes</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="important-tip">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div>
+                            <h4>Dica de Ouro para Atendimentos</h4>
+                            <p>Antes de abrir chamado técnico avançado reclamando de Lentidão, Perda de Pacotes ou Ping
+                                Alto, peça com firmeza para o cliente testar a conexão através de um computador ligado
+                                via <span class="highlight">CABO DE REDE</span> (RJ45). Redes <span
+                                    class="highlight">Wi-Fi</span> fracas com paredes, distâncias longas ou
+                                interferências causam mais de 90% dos sintomas e problemas relatados!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navegação -->
+    <div class="controls">
+        <button class="btn-nav" id="btn-prev" onclick="changeSlide(-1)" disabled>
+            <i class="fa-solid fa-arrow-left"></i> Anterior
+        </button>
+
+        <div class="slide-dots" id="dots-container">
+            <div class="dot active" onclick="goToSlide(0)"></div>
+            <div class="dot" onclick="goToSlide(1)"></div>
+            <div class="dot" onclick="goToSlide(2)"></div>
+            <div class="dot" onclick="goToSlide(3)"></div>
+            <div class="dot" onclick="goToSlide(4)"></div>
+            <div class="dot" onclick="goToSlide(5)"></div>
+        </div>
+
+        <button class="btn-nav" id="btn-next" onclick="changeSlide(1)">
+            Próximo <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlideIndex) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            dots.forEach((dot, index) => {
+                if (index === currentSlideIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            btnPrev.disabled = currentSlideIndex === 0;
+            btnNext.disabled = currentSlideIndex === slides.length - 1;
+        }
+
+        function changeSlide(direction) {
+            currentSlideIndex += direction;
+            if (currentSlideIndex < 0) currentSlideIndex = 0;
+            if (currentSlideIndex >= slides.length) currentSlideIndex = slides.length - 1;
+            updateSlides();
+        }
+
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            updateSlides();
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                if (currentSlideIndex < slides.length - 1) changeSlide(1);
+            }
+            if (e.key === 'ArrowLeft') {
+                if (currentSlideIndex > 0) changeSlide(-1);
+            }
+            if (e.key === 'f' || e.key === 'F') {
+                toggleFullScreen();
+            }
+        });
+    </script>
+</body>
+
+</html>

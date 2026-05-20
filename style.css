@@ -146,6 +146,7 @@ h1, h2, h3, h4, h5 {
     font-weight: 800;
     background: linear-gradient(to right, #ffffff, #a855f7);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -673,6 +674,7 @@ h1, h2, h3, h4, h5 {
     margin-bottom: 15px;
     background: linear-gradient(135deg, #ffffff 30%, #3b82f6 100%);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -1210,11 +1212,13 @@ h1, h2, h3, h4, h5 {
     border-radius: 3px;
     outline: none;
     -webkit-appearance: none;
+    appearance: none;
     background: linear-gradient(to right, var(--success) 0%, var(--success) 45%, var(--warning) 65%, var(--danger) 100%);
 }
 
 .optical-range::-webkit-slider-thumb {
     -webkit-appearance: none;
+    appearance: none;
     width: 18px;
     height: 18px;
     border-radius: 50%;
